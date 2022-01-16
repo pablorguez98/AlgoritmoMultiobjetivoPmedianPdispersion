@@ -18,6 +18,8 @@ Un ejemplo de salida sería el siguiente, el cual corresponde al grafo pmed3 y, 
 
 ![pmed3 txt](https://user-images.githubusercontent.com/63146846/149678054-0548b66e-6757-4470-a03d-ed5557276161.png)
 
+Las gráficas se guardan automaticamente en la misma carpeta del proyecto.
+
 **FUNCIONAMIENTO Y EJECUCIÓN DEL MOEAFramework**
 
 **RESULTADOS OBTENIDOS**
