@@ -20,7 +20,7 @@ Un ejemplo de salida sería el siguiente, el cual corresponde al grafo pmed3 y, 
 
 **FUNCIONAMIENTO Y EJECUCIÓN DEL MOEAFramework**
 
-RESULTADOS OBTENIDOS
+**RESULTADOS OBTENIDOS**
 
 Para poder ver los resultados obtenidos, es necesario acceder al siguiente enlace, el cual lleva al PDF final con las soluciones: poner enlace
 
