@@ -44,6 +44,14 @@ Las gráficas se guardan automaticamente en la misma carpeta del proyecto.
 
 Para poder ver los resultados obtenidos, es necesario acceder al siguiente enlace, el cual lleva al PDF final con las soluciones: poner enlace
 
-**CRÉDITOS, AUTOR, ETC**
+**AUTOR**
 
+Pablo Rodríguez Puebla
+
+Colaboradores: Jesús Sanchez-Oro Calvo e Isaac Lozano Osorio
+
+**AGRADECIMIENTOS**
+
+Jesús Sánchez-Oro Calvo
+Isaac Lozano Osorio
 
