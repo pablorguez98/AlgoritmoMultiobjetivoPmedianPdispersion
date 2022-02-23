@@ -53,5 +53,6 @@ Colaboradores: Jesús Sanchez-Oro Calvo e Isaac Lozano Osorio
 **AGRADECIMIENTOS**
 
 Jesús Sánchez-Oro Calvo
+
 Isaac Lozano Osorio
 
