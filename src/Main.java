@@ -8,64 +8,95 @@ import java.util.ArrayList;
 
 public class Main {
 
-    public static void main (String[] args) throws IOException {
-        File carpeta =  new File("C:/Users/pablo/OneDrive/Escritorio/Algoritmo pmedian pdispersion/Instancias");
-        String[] grafos = carpeta.list();
-        assert grafos != null;
-        for(String nombre_grafo: grafos){
-            System.out.println("Grafo "+nombre_grafo+":");
-            FileReader lectura = new FileReader("C:/Users/pablo/OneDrive/Escritorio/Algoritmo pmedian pdispersion/Instancias/"+nombre_grafo);
-            BufferedReader transmision = new BufferedReader(lectura);
-            String linea_leida;
-            int i = 1;
-            Grafo grafo = null;
-            while((linea_leida=transmision.readLine()) != null){
-                String[] informacion1 = linea_leida.split(" ");
-                String[] informacion2 = new String[informacion1.length-1];
-                System.arraycopy(informacion1,1,informacion2,0,informacion2.length);
-                if(i==1){
-                    int numero_nodos = Integer.parseInt(informacion2[0]);
-                    int numero_instalaciones = Integer.parseInt(informacion2[2]);
-                    grafo = new Grafo(numero_nodos, numero_instalaciones);
-                }else{
-                    int nodo1 = Integer.parseInt(informacion2[0]);
-                    int nodo2 = Integer.parseInt(informacion2[1]);
-                    double distancia = Integer.parseInt(informacion2[2]);
-                    grafo.getDistancias()[nodo1-1][nodo2-1]=distancia;
-                    grafo.getDistancias()[nodo2-1][nodo1-1]=distancia;
-                }
-                i++;
-            }
-            transmision.close();
-            lectura.close();
-            assert grafo != null;
-            grafo.calcular_distancias();
-            grafo.calcular_instalaciones();
-            long ejecucion_frente_pareto = grafo.frente_pareto();
-            ArrayList<Solucion> frente_pareto1 = (ArrayList<Solucion>) grafo.getSoluciones().clone();
-            System.out.println("\tFrente de Pareto:");
-            System.out.println("\t\tNumero de soluciones: " + grafo.getSoluciones().size());
-            System.out.println("\t\tTiempo de ejecucuion (sg): " + ejecucion_frente_pareto/1000);
-            long ejecucion_busqueda_local = grafo.busqueda_local();
-            ArrayList<Solucion> busqueda_local1 = (ArrayList<Solucion>) grafo.getSoluciones().clone();
-            System.out.println("\tBusqueda local:");
-            System.out.println("\t\tNumero de soluciones: " + grafo.getSoluciones().size());
-            System.out.println("\t\tTiempo de ejecucuion (sg): " + ejecucion_busqueda_local/1000);
+    //Atributos
+    private static Grafo mapa = null;
 
-            final XYSeries frente_pareto2 = new XYSeries("Frente de Pareto");
-            final XYSeries busqueda_local2 = new XYSeries("Busqueda local");
-            for (Solucion value : frente_pareto1)
-                frente_pareto2.add(value.getPmedian(), value.getPdispersion());
-            for (Solucion solucion : busqueda_local1)
-                busqueda_local2.add(solucion.getPmedian(), solucion.getPdispersion());
-            final XYSeriesCollection collection = new XYSeriesCollection();
-            collection.addSeries(frente_pareto2);
-            collection.addSeries(busqueda_local2);
-            try{
-                final JFreeChart grafica_XY = new Grafica().crear_grafica(collection, nombre_grafo);
-                ChartUtilities.saveChartAsPNG(new File(nombre_grafo+".png"), grafica_XY, 400, 300);
-            }catch (Exception e) {
-                e.printStackTrace();
+    public static void main(String[] args) throws IOException {
+        File carpeta = new File("C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Instancias");
+        String[] grafos = carpeta.list();
+        if(grafos != null){
+            for(String grafo: grafos){
+                System.out.println("Grafo: " + grafo + ":");
+                FileReader lectura = new FileReader("C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Instancias/" + grafo);
+                BufferedReader transmision = new BufferedReader(lectura);
+                String linea;
+                int linea_leida = 1;
+                while((linea= transmision.readLine()) != null){
+                    String[] informacion1 = linea.split(" ");
+                    String[] informacion = new String[informacion1.length-1];
+                    System.arraycopy(informacion1, 1, informacion, 0, informacion.length);
+                    if(linea_leida == 1){
+                        int nodos = Integer.parseInt(informacion[0]);
+                        int instalaciones = Integer.parseInt(informacion[2]);
+                        mapa = new Grafo(nodos, instalaciones);
+                    }else{
+                        int nodoA = Integer.parseInt(informacion[0])-1;
+                        int nodoB = Integer.parseInt(informacion[1])-1;
+                        double distanciaAB = Integer.parseInt(informacion[2]);
+                        mapa.meterDistancia(nodoA, nodoB, distanciaAB);
+                    }
+                    linea_leida++;
+                }
+                transmision.close();
+                lectura.close();
+                if(mapa != null){
+                    mapa.calcularDistancias();
+                    mapa.calcularInstalaciones();
+                    long ejecucionFrentePareto = mapa.frentePareto();
+                    ArrayList<Solucion> solucionesFrentePareto = (ArrayList<Solucion>) mapa.getSoluciones().clone();
+                    System.out.println("\tFrente de Pareto:");
+                    System.out.println("\t\tNumero de soluciones: " + solucionesFrentePareto.size());
+                    System.out.println("\t\tTiempo de ejecucion (sg): " + ejecucionFrentePareto/1000);
+                    long ejecucionBusquedaLocal = mapa.busquedaLocal();
+                    ArrayList<Solucion> solucionesBusquedaLocal = (ArrayList<Solucion>) mapa.getSoluciones().clone();
+                    System.out.println("\tBusqueda local:");
+                    System.out.println("\t\tNumero de soluciones: " + solucionesBusquedaLocal.size());
+                    System.out.println("\t\tTiempo de ejecucion (sg): " + ejecucionBusquedaLocal/1000);
+                    try{
+                        String ruta = "C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Frentes/"+grafo;
+                        File file = new File(ruta);
+                        if(!file.exists())
+                            file.createNewFile();
+                        FileWriter fw = new FileWriter(file);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        bw.write("Frente de Pareto:\n");
+                        bw.write("\tNumero de soluciones: " + solucionesFrentePareto.size()+"\n");
+                        bw.write("\tTiempo de ejecucion (sg): " + ejecucionFrentePareto/1000+"\n");
+                        int i = 1;
+                        for(Solucion s: solucionesFrentePareto){
+                            bw.write("\t\tSolucion "+i+"--> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
+                            i++;
+                        }
+                        bw.write("Busqueda localo:\n");
+                        bw.write("\tNumero de soluciones: " + solucionesBusquedaLocal.size()+"\n");
+                        bw.write("\tTiempo de ejecucion (sg): " + ejecucionBusquedaLocal/1000+"\n");
+                        i = 1;
+                        for(Solucion s: solucionesBusquedaLocal){
+                            bw.write("\t\tSolucion "+i+"--> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
+                            i++;
+                        }
+                        bw.close();
+                        fw.close();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
+
+                    final XYSeries frentePareto = new XYSeries("Frente de Pareto");
+                    final XYSeries busquedaLocal = new XYSeries("Busqueda local");
+                    for (Solucion value : solucionesFrentePareto)
+                        frentePareto.add(value.getPmedian(), value.getPdispersion());
+                    for (Solucion solucion : solucionesBusquedaLocal)
+                        busquedaLocal.add(solucion.getPmedian(), solucion.getPdispersion());
+                    final XYSeriesCollection collection = new XYSeriesCollection();
+                    collection.addSeries(frentePareto);
+                    collection.addSeries(busquedaLocal);
+                    try{
+                        final JFreeChart grafica_XY = new Grafica().crear_grafica(collection, grafo, solucionesFrentePareto.size(), ejecucionFrentePareto/1000, solucionesBusquedaLocal.size(),ejecucionBusquedaLocal/1000);
+                        ChartUtilities.saveChartAsPNG(new File("C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Graficas/"+grafo+".png"), grafica_XY, 400, 300);
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
     }

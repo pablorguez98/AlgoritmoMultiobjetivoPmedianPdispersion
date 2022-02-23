@@ -10,13 +10,13 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class Grafica {
 
-    //Atributos de la clase Grafica
+    //Atributos
     private static Color FRENTE_PARETO = Color.blue;
     private static Color BUSQUEDA_LOCAL = Color.red;
     private static Color RECUADROS_GRAFICA = Color.black;
     private static Color FONDO_GRAFICA = Color.white;
 
-    //Métodos secundarios de la clase Grafica
+    //Métodos
     private void configurarGuias(XYPlot plot){
         plot.setDomainGridlinePaint(RECUADROS_GRAFICA);
         plot.setRangeGridlinePaint(RECUADROS_GRAFICA);
@@ -24,12 +24,12 @@ public class Grafica {
 
     private void configurar_eje_x(NumberAxis domainAxis){
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        domainAxis.setTickUnit(new NumberTickUnit(0.05));
+        domainAxis.setTickUnit(new NumberTickUnit(0));
     }
 
     private void configurar_eje_y(NumberAxis rangeAxis){
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        rangeAxis.setTickUnit(new NumberTickUnit(0.02));
+        rangeAxis.setTickUnit(new NumberTickUnit(0));
     }
 
     private void configurar_lineas(XYLineAndShapeRenderer renderer){
@@ -40,8 +40,11 @@ public class Grafica {
     }
 
     //Métodos principales de la clase Grafica
-    public JFreeChart crear_grafica(XYSeriesCollection series, String grafo){
-        final JFreeChart grafico = ChartFactory.createXYLineChart("Grafo: "+grafo, "P-median", "P-dispersion", series, PlotOrientation.VERTICAL, true, false, false);
+    public JFreeChart crear_grafica(XYSeriesCollection series, String grafo, int solucionesFrentePareto, double ejecucionFrentePareto, int solucionesBusquedaLocal, double ejecucionBusquedaLocal){
+        final JFreeChart grafico = ChartFactory.createXYLineChart(
+                "Grafo: "+grafo,
+                "P-median("+solucionesFrentePareto+","+ejecucionFrentePareto+")",
+                "P-dispersion("+solucionesBusquedaLocal+","+ejecucionBusquedaLocal+")", series, PlotOrientation.VERTICAL, true, false, false);
         grafico.setBackgroundPaint(FONDO_GRAFICA);
         configurarGuias((XYPlot) grafico.getPlot());
         configurar_eje_x((NumberAxis) ((XYPlot) grafico.getPlot()).getDomainAxis());

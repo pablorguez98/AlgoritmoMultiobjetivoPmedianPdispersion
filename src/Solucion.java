@@ -2,20 +2,20 @@ import java.util.ArrayList;
 
 public class Solucion {
 
-    //Atributos de la clase Solucion
+    //Atributos
     private double pmedian;
     private double pdispersion;
-    private ArrayList<Integer> combinacion_instalaciones;
+    private ArrayList<Integer> instalaciones;
 
-    //Contructor de la clase Solucion
-    public Solucion(double pmedian, double pdispersion, ArrayList<Integer> combinacion_instalaciones){
+    //Constructor
+    public Solucion(double pmedian, double pdispersion, ArrayList<Integer> instalaciones){
         this.pmedian = pmedian;
         this.pdispersion = pdispersion;
-        this.combinacion_instalaciones = combinacion_instalaciones;
+        this.instalaciones = (ArrayList<Integer>) instalaciones.clone();
     }
 
-    //Métodos get y set de la clase Solucion
-    public double getPmedian(){
+    //Get y Set
+    public double getPmedian() {
         return this.pmedian;
     }
 
@@ -23,8 +23,8 @@ public class Solucion {
         return this.pdispersion;
     }
 
-    public ArrayList<Integer> getCombinacion_instalaciones(){
-        return this.combinacion_instalaciones;
+    public ArrayList<Integer> getInstalaciones() {
+        return this.instalaciones;
     }
 
     public void setPmedian(double pmedian) {

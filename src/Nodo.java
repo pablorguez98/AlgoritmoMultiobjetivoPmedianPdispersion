@@ -1,31 +1,29 @@
 public class Nodo {
 
-    //Atributos de la clase Nodo
-    private int numero_nodo;
-    private double distancia_minima;
-    private double distancia_maxima;
+    //Atributos
+    private double distanciaMinima;
+    private double distanciaMaxima;
 
-    //Constructor de la clase Nodo
-    public Nodo(int numero_nodo){
-        this.numero_nodo = numero_nodo;
-        this.distancia_minima = Double.MAX_VALUE;
-        this.distancia_maxima = Double.MIN_VALUE;
+    //Constructor
+    public Nodo(){
+        this.distanciaMinima = Double.MAX_VALUE;
+        this.distanciaMaxima = Double.MIN_VALUE;
     }
 
-    //Métodos get y set de la clase Nodo
-    public double getDistancia_maxima() {
-        return this.distancia_maxima;
+    //Get y Set
+    public double getDistanciaMinima() {
+        return this.distanciaMinima;
     }
 
-    public double getDistancia_minima() {
-        return this.distancia_minima;
+    public double getDistanciaMaxima() {
+        return this.distanciaMaxima;
     }
 
-    public void setDistancia_minima(double distancia_minima) {
-        this.distancia_minima = distancia_minima;
+    public void setDistanciaMinima(double distanciaMinima){
+        this.distanciaMinima = distanciaMinima;
     }
 
-    public void setDistancia_maxima(double distancia_maxima) {
-        this.distancia_maxima = distancia_maxima;
+    public void setDistanciaMaxima(double distanciaMaxima) {
+        this.distanciaMaxima = distanciaMaxima;
     }
 }
