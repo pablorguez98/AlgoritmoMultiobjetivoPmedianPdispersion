@@ -79,7 +79,7 @@ public class Main {
                     series.addSeries(frentePareto);
                     series.addSeries(busquedaLocal);
                     try{
-                        final JFreeChart grafica = new Grafica().crear_grafica(series, grafo, numeroFP, ejecucionFP, numeroBL, ejecucionBL);
+                        final JFreeChart grafica = new Grafica().crear_grafica(series, "Grafo: " + grafo);
                         ChartUtilities.saveChartAsPNG(new File(ruta+"Graficas/"+grafo+".png"), grafica, 400, 300);
                         File fichero = new File(ruta+"Frentes/"+grafo);
                         FileWriter escritura = new FileWriter(fichero);
