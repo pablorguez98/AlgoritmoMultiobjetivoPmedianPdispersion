@@ -2,22 +2,29 @@ import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-
 import java.io.*;
 import java.util.ArrayList;
 
 public class Main {
-
     //Atributos
-    private static Grafo mapa = null;
+    private static Grafo mapa = null; //Representa el mapa sobre el que se va a trabajar.
+    private static final String ruta = "C:/Users/pablo/OneDrive/Escritorio/TFG/";
 
     public static void main(String[] args) throws IOException {
-        File carpeta = new File("C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Instancias");
+        /* PASO 1.
+               1. Se accede a la carpeta que contiene los mapas y se lista cada uno de ellos.
+         */
+        File carpeta = new File(ruta+"Instancias");
         String[] grafos = carpeta.list();
         if(grafos != null){
             for(String grafo: grafos){
+                /* PASO 2. Para cada mapa:
+                       1. Se obtiene el nombre del mapa y se realiza una lectura de la informacion del mapa.
+                       2. Se inicializa el mapa con la información leída como el número de nodos o de instalaciones,
+                          así como con las distancias entre cada punto.
+                 */
                 System.out.println("Grafo: " + grafo + ":");
-                FileReader lectura = new FileReader("C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Instancias/" + grafo);
+                FileReader lectura = new FileReader(ruta+"Instancias/" + grafo);
                 BufferedReader transmision = new BufferedReader(lectura);
                 String linea;
                 int linea_leida = 1;
@@ -39,61 +46,57 @@ public class Main {
                 }
                 transmision.close();
                 lectura.close();
+                /* Paso 3. Una vez inicializado el grafo:
+                       1. Se evalúan el resto de distancias para obtener las distancias de un nodo a cualquier otro
+                          mediante el Algoritmo de Floyd-Warshall.
+                       2. Se establace unos conjuntos de instalaciones de partida para la evaluación del algoritmo.
+                       3. Se genera un Frente de Pareto con un conjunto de X soluciones, todas igual de válidas,
+                          así como se establece cuál es la mejor solución de ese conjunto de X soluciones.
+                       4. A partir de la mejor solución, se aplica una Búsqueda Local con el fin de mejorar el Frente
+                          de Pareto.
+                 */
                 if(mapa != null){
                     mapa.calcularDistancias();
                     mapa.calcularInstalaciones();
-                    long ejecucionFrentePareto = mapa.frentePareto();
-                    ArrayList<Solucion> solucionesFrentePareto = (ArrayList<Solucion>) mapa.getSoluciones().clone();
-                    System.out.println("\tFrente de Pareto:");
-                    System.out.println("\t\tNumero de soluciones: " + solucionesFrentePareto.size());
-                    System.out.println("\t\tTiempo de ejecucion (sg): " + ejecucionFrentePareto/1000);
-                    long ejecucionBusquedaLocal = mapa.busquedaLocal();
-                    ArrayList<Solucion> solucionesBusquedaLocal = (ArrayList<Solucion>) mapa.getSoluciones().clone();
-                    System.out.println("\tBusqueda local:");
-                    System.out.println("\t\tNumero de soluciones: " + solucionesBusquedaLocal.size());
-                    System.out.println("\t\tTiempo de ejecucion (sg): " + ejecucionBusquedaLocal/1000);
-                    try{
-                        String ruta = "C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Frentes/"+grafo;
-                        File file = new File(ruta);
-                        if(!file.exists())
-                            file.createNewFile();
-                        FileWriter fw = new FileWriter(file);
-                        BufferedWriter bw = new BufferedWriter(fw);
-                        bw.write("Frente de Pareto:\n");
-                        bw.write("\tNumero de soluciones: " + solucionesFrentePareto.size()+"\n");
-                        bw.write("\tTiempo de ejecucion (sg): " + ejecucionFrentePareto/1000+"\n");
-                        int i = 1;
-                        for(Solucion s: solucionesFrentePareto){
-                            bw.write("\t\tSolucion "+i+"--> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
-                            i++;
-                        }
-                        bw.write("Busqueda localo:\n");
-                        bw.write("\tNumero de soluciones: " + solucionesBusquedaLocal.size()+"\n");
-                        bw.write("\tTiempo de ejecucion (sg): " + ejecucionBusquedaLocal/1000+"\n");
-                        i = 1;
-                        for(Solucion s: solucionesBusquedaLocal){
-                            bw.write("\t\tSolucion "+i+"--> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
-                            i++;
-                        }
-                        bw.close();
-                        fw.close();
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
-
+                    long ejecucionFP = mapa.frentePareto()/1000;
+                    ArrayList<Solucion> solucionesFP = (ArrayList<Solucion>) mapa.getSoluciones().clone();
+                    int numeroFP = solucionesFP.size();
+                    long ejecucionBL = mapa.busquedaLocal() /1000;
+                    ArrayList<Solucion> solucionesBL = (ArrayList<Solucion>) mapa.getSoluciones().clone();
+                    int numeroBL = solucionesBL.size();
+                    /* Paso 4.
+                           1. Se generan unos ficheros .png con la representación del Frente de Pareto y de la
+                              Búsqueda Local.
+                           2. Se generan unos ficheros .txt con la información del Frente de Pareto y la Búsqueda Local.
+                     */
                     final XYSeries frentePareto = new XYSeries("Frente de Pareto");
                     final XYSeries busquedaLocal = new XYSeries("Busqueda local");
-                    for (Solucion value : solucionesFrentePareto)
+                    for (Solucion value : solucionesFP)
                         frentePareto.add(value.getPmedian(), value.getPdispersion());
-                    for (Solucion solucion : solucionesBusquedaLocal)
+                    for (Solucion solucion : solucionesBL)
                         busquedaLocal.add(solucion.getPmedian(), solucion.getPdispersion());
-                    final XYSeriesCollection collection = new XYSeriesCollection();
-                    collection.addSeries(frentePareto);
-                    collection.addSeries(busquedaLocal);
+                    final XYSeriesCollection series = new XYSeriesCollection();
+                    series.addSeries(frentePareto);
+                    series.addSeries(busquedaLocal);
                     try{
-                        final JFreeChart grafica_XY = new Grafica().crear_grafica(collection, grafo, solucionesFrentePareto.size(), ejecucionFrentePareto/1000, solucionesBusquedaLocal.size(),ejecucionBusquedaLocal/1000);
-                        ChartUtilities.saveChartAsPNG(new File("C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivoPmedianPdispersion/Graficas/"+grafo+".png"), grafica_XY, 400, 300);
-                    }catch (Exception e) {
+                        final JFreeChart grafica = new Grafica().crear_grafica(series, grafo, numeroFP, ejecucionFP, numeroBL, ejecucionBL);
+                        ChartUtilities.saveChartAsPNG(new File(ruta+"Graficas/"+grafo+".png"), grafica, 400, 300);
+                        File fichero = new File(ruta+"Frentes/"+grafo);
+                        FileWriter escritura = new FileWriter(fichero);
+                        BufferedWriter comunicacion = new BufferedWriter(escritura);
+                        comunicacion.write("Frente de Pareto:\n");
+                        comunicacion.write("\tNumero de soluciones: " + numeroFP +"\n");
+                        comunicacion.write("\tTiempo de ejecucion (sg): " + ejecucionBL +"\n");
+                        for(Solucion s: solucionesFP)
+                            comunicacion.write("\t\tSolucion -> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
+                        comunicacion.write("Busqueda local:\n");
+                        comunicacion.write("\tNumero de soluciones: " + numeroBL+"\n");
+                        comunicacion.write("\tTiempo de ejecucion (sg): " + ejecucionBL +"\n");
+                        for(Solucion s: solucionesBL)
+                            comunicacion.write("\t\tSolucion -> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
+                        comunicacion.close();
+                        escritura.close();
+                    }catch(Exception e){
                         e.printStackTrace();
                     }
                 }
