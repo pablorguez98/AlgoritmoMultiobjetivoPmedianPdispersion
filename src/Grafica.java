@@ -9,13 +9,13 @@ import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.data.xy.XYSeriesCollection;
 
 public class Grafica {
-
     //Atributos
     private static Color FRENTE_PARETO = Color.blue;
     private static Color BUSQUEDA_LOCAL = Color.red;
     private static Color RECUADROS_GRAFICA = Color.black;
     private static Color FONDO_GRAFICA = Color.white;
-
+    JFreeChart grafica;
+    
     //Métodos
     private void configurarGuias(XYPlot plot){
         plot.setDomainGridlinePaint(RECUADROS_GRAFICA);
@@ -38,18 +38,14 @@ public class Grafica {
         renderer.setSeriesPaint(0, FRENTE_PARETO);
         renderer.setSeriesPaint(1, BUSQUEDA_LOCAL);
     }
-
-    //Métodos principales de la clase Grafica
-    public JFreeChart crear_grafica(XYSeriesCollection series, String grafo, int solucionesFrentePareto, double ejecucionFrentePareto, int solucionesBusquedaLocal, double ejecucionBusquedaLocal){
-        final JFreeChart grafico = ChartFactory.createXYLineChart(
-                "Grafo: "+grafo,
-                "P-median("+solucionesFrentePareto+","+ejecucionFrentePareto+")",
-                "P-dispersion("+solucionesBusquedaLocal+","+ejecucionBusquedaLocal+")", series, PlotOrientation.VERTICAL, true, false, false);
-        grafico.setBackgroundPaint(FONDO_GRAFICA);
-        configurarGuias((XYPlot) grafico.getPlot());
-        configurar_eje_x((NumberAxis) ((XYPlot) grafico.getPlot()).getDomainAxis());
-        configurar_eje_y((NumberAxis) ((XYPlot) grafico.getPlot()).getDomainAxis());
-        configurar_lineas((XYLineAndShapeRenderer) ((XYPlot) grafico.getPlot()).getRenderer());
-        return grafico;
+    
+    public JFreeChart crear_grafica(XYSeriesCollection series, String grafo){
+        grafica = ChartFactory.createXYLineChart(grafo,"P-median","P-dispersion", series, PlotOrientation.VERTICAL,true,false,false);
+        grafica.setBackgroundPaint(FONDO_GRAFICA);
+        configurarGuias((XYPlot) grafica.getPlot());
+        configurar_eje_x((NumberAxis) ((XYPlot) grafica.getPlot()).getDomainAxis());
+        configurar_eje_y((NumberAxis) ((XYPlot) grafica.getPlot()).getDomainAxis());
+        configurar_lineas((XYLineAndShapeRenderer) ((XYPlot) grafica.getPlot()).getRenderer());
+        return grafica;
     }
 }
