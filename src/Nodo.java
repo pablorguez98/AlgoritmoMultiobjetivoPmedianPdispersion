@@ -1,5 +1,4 @@
 public class Nodo {
-
     //Atributos
     private double distanciaMinima;
     private double distanciaMaxima;
