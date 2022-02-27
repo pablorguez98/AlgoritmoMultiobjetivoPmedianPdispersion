@@ -1,17 +1,16 @@
-import java.util.ArrayList;
-
 public class Solucion {
-
     //Atributos
     private double pmedian;
+    private double pmedianNormalizada;
     private double pdispersion;
-    private ArrayList<Integer> instalaciones;
+    private double pdispersionNormalizada;
+    private boolean[] instalaciones;
 
     //Constructor
-    public Solucion(double pmedian, double pdispersion, ArrayList<Integer> instalaciones){
+    public Solucion(double pmedian, double pdispersion, boolean[] instalaciones){
         this.pmedian = pmedian;
         this.pdispersion = pdispersion;
-        this.instalaciones = (ArrayList<Integer>) instalaciones.clone();
+        this.instalaciones = instalaciones;
     }
 
     //Get y Set
@@ -23,7 +22,7 @@ public class Solucion {
         return this.pdispersion;
     }
 
-    public ArrayList<Integer> getInstalaciones() {
+    public boolean[] getInstalaciones() {
         return this.instalaciones;
     }
 
@@ -33,5 +32,21 @@ public class Solucion {
 
     public void setPdispersion(double pdispersion) {
         this.pdispersion = pdispersion;
+    }
+
+    public double getPdispersionNormalizada() {
+        return this.pdispersionNormalizada;
+    }
+
+    public double getPmedianNormalizada() {
+        return this.pmedianNormalizada;
+    }
+
+    public void setPmedianNormalizada(double pmedianNormalizada) {
+        this.pmedianNormalizada = pmedianNormalizada;
+    }
+
+    public void setPdispersionNormalizada(double pdispersionNormalizada) {
+        this.pdispersionNormalizada = pdispersionNormalizada;
     }
 }
