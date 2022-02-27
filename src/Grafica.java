@@ -10,12 +10,12 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 public class Grafica {
     //Atributos
-    private static Color FRENTE_PARETO = Color.blue;
-    private static Color BUSQUEDA_LOCAL = Color.red;
-    private static Color RECUADROS_GRAFICA = Color.black;
-    private static Color FONDO_GRAFICA = Color.white;
+    private static final Color FRENTE_PARETO = Color.blue;
+    private static final Color BUSQUEDA_LOCAL = Color.red;
+    private static final Color RECUADROS_GRAFICA = Color.black;
+    private static final Color FONDO_GRAFICA = Color.white;
     JFreeChart grafica;
-    
+
     //Métodos
     private void configurarGuias(XYPlot plot){
         plot.setDomainGridlinePaint(RECUADROS_GRAFICA);
@@ -24,12 +24,12 @@ public class Grafica {
 
     private void configurar_eje_x(NumberAxis domainAxis){
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        domainAxis.setTickUnit(new NumberTickUnit(0));
+        domainAxis.setTickUnit(new NumberTickUnit(0.1));
     }
 
     private void configurar_eje_y(NumberAxis rangeAxis){
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        rangeAxis.setTickUnit(new NumberTickUnit(0));
+        rangeAxis.setTickUnit(new NumberTickUnit(0.1));
     }
 
     private void configurar_lineas(XYLineAndShapeRenderer renderer){
@@ -38,7 +38,7 @@ public class Grafica {
         renderer.setSeriesPaint(0, FRENTE_PARETO);
         renderer.setSeriesPaint(1, BUSQUEDA_LOCAL);
     }
-    
+
     public JFreeChart crear_grafica(XYSeriesCollection series, String grafo){
         grafica = ChartFactory.createXYLineChart(grafo,"P-median","P-dispersion", series, PlotOrientation.VERTICAL,true,false,false);
         grafica.setBackgroundPaint(FONDO_GRAFICA);
