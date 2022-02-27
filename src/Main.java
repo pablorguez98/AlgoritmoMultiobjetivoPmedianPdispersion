@@ -86,7 +86,7 @@ public class Main {
                         BufferedWriter comunicacion = new BufferedWriter(escritura);
                         comunicacion.write("Frente de Pareto:\n");
                         comunicacion.write("\tNumero de soluciones: " + numeroFP +"\n");
-                        comunicacion.write("\tTiempo de ejecucion (sg): " + ejecucionBL +"\n");
+                        comunicacion.write("\tTiempo de ejecucion (sg): " + ejecucionFP +"\n");
                         for(Solucion s: solucionesFP)
                             comunicacion.write("\t\tSolucion -> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
                         comunicacion.write("Busqueda local:\n");
