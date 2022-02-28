@@ -16,7 +16,7 @@ public class Grafo {
     private ArrayList<Solucion> soluciones = new ArrayList<>();
     private ArrayList<Solucion> solucionesBorradas = new ArrayList<>();
     private boolean [][] matrizCombinacionInstalaciones;
-    private final int numeroCombinaciones = 5000;
+    private final int numeroCombinaciones = 1000;
 
     //Constructor
     public Grafo(int nodos, int instalaciones){
@@ -52,6 +52,18 @@ public class Grafo {
             for(int j = 0; j < this.nodos; j++)
                 for(int k = 0; k < this.nodos; k++)
                     this.distancias[i][j] = Math.min(this.distancias[i][j], this.distancias[i][k] + this.distancias[k][j]);
+
+        for(int i = 0; i < this.nodos; i ++){
+            for(int j = 0; j < this.nodos; j++)
+                if (i != j) {
+                    this.puntosInteres[i].setDistanciaMinima(Math.min(this.puntosInteres[i].getDistanciaMinima(), this.distancias[i][j]));
+                    this.puntosInteres[i].setDistanciaMaxima(Math.max(this.puntosInteres[i].getDistanciaMaxima(), this.distancias[i][j]));
+                    this.distanciaMinimaGeneral = Math.min(this.distanciaMinimaGeneral, this.puntosInteres[i].getDistanciaMinima());
+                    this.distanciaMaximaGeneral = Math.max(this.distanciaMaximaGeneral, this.puntosInteres[i].getDistanciaMaxima());
+                }
+            this.sumatorioDistanciasMinimas = this.sumatorioDistanciasMinimas + this.puntosInteres[i].getDistanciaMinima();
+            this.sumatorioDistanciasMaximas = this.sumatorioDistanciasMaximas + this.puntosInteres[i].getDistanciaMaxima();
+        }
     }
 
     public void calcularInstalaciones(){
@@ -63,44 +75,6 @@ public class Grafo {
                     this.matrizCombinacionInstalaciones[i][nodoInstalacion] = true;
                 else
                     j--;
-            }
-    }
-
-    private void calcularDistanciasNodos(boolean[] combinacionInstalaciones){
-        this.distanciaMinimaGeneral = Double.MAX_VALUE;
-        this.distanciaMaximaGeneral = Double.MIN_VALUE;
-        this.sumatorioDistanciasMinimas = 0;
-        this.sumatorioDistanciasMaximas = 0;
-        /*
-            Paso 1. Para cada nodo i y cada nodo j que no es una instalación y que i es distinto de j:
-                1. Se evalúa si la distancia mínima general es mayor que la distancia del nodo i al j. Si la distancia
-                   de i a j es menor que la mínima general, esta última se actualiza con la distancia de i a j.
-                2. Se evalúa si la distancia máxima general es menor que la distancia del nodo i al j. Si la distancia
-                   de i a j es mayor que la máxima general, esta última se actualiza con la distancia de i a j.
-                3. Se evalúa si la distancia mínima del nodo i es mayor que la distancia del nodo i al j. Si la
-                   distancia de i a j es menor que la mínima del nodo i, esta última se actualiza con la distancia de i
-                   a j.
-                4. Se evalúa si la distancia máxima del nodo i es menor que la distancia del nodo i al nodo j. Si la
-                   distancia de i a j es mayor que la máxima del nodo i, esta última se actualiza con la distancia de i
-                   a j.
-                5. Se suma al sumatorio de las distancias mínimas del grafo el valor de la distancia mínima del nodo i.
-                6. Se suma al sumatorio de las distancias mínimas del grafo el valor de la distancia mínima del nodo i.
-         */
-        for(int i = 0; i < this.nodos; i ++)
-            if(!combinacionInstalaciones[i]){
-                for(int j = 0; j < this.nodos; j++)
-                    if(i != j && !combinacionInstalaciones[j]){
-                        if(Double.compare(this.distanciaMinimaGeneral, this.distancias[i][j]) > 0)
-                            this.distanciaMinimaGeneral = this.distancias[i][j];
-                        if(Double.compare(this.distanciaMaximaGeneral, this.distancias[i][j]) < 0)
-                            this.distanciaMaximaGeneral = this.distancias[i][j];
-                        if(Double.compare(this.puntosInteres[i].getDistanciaMinima(), this.distancias[i][j]) > 0)
-                            this.puntosInteres[i].setDistanciaMinima(this.distancias[i][j]);
-                        if(Double.compare(this.puntosInteres[i].getDistanciaMaxima(), this.distancias[i][j]) < 0)
-                            this.puntosInteres[i].setDistanciaMaxima(this.distancias[i][j]);
-                    }
-                this.sumatorioDistanciasMinimas = this.sumatorioDistanciasMinimas + this.puntosInteres[i].getDistanciaMinima();
-                this.sumatorioDistanciasMaximas = this.sumatorioDistanciasMaximas + this.puntosInteres[i].getDistanciaMaxima();
             }
     }
 
@@ -142,11 +116,11 @@ public class Grafo {
 
     private boolean meterSolucion(Solucion solucion){
         this.solucionesBorradas.clear();
-        double pmedian2 = normalizarPmedian(solucion);
-        double pdispersion2 = normalizarPdispersion(solucion);
+        double pmedian2 = solucion.getPmedian();
+        double pdispersion2 = solucion.getPdispersion();
         for(Solucion s: this.soluciones){
-            double pmedian1 = s.getPmedianNormalizada();
-            double pdispersion1 = s.getPdispersionNormalizada();
+            double pmedian1 = s.getPmedian();
+            double pdispersion1 = s.getPdispersion();
             if(Double.compare(pmedian1, pmedian2) <= 0 && Double.compare(pdispersion1, pdispersion2) >= 0)
                 return false;
             else if(Double.compare(pmedian1,pmedian2) >= 0 && Double.compare(pdispersion1,pdispersion2) <= 0)
@@ -161,11 +135,14 @@ public class Grafo {
     public long frentePareto(){
         long inicioEjecucion = new Date().getTime();
         for (boolean[] matrizCombinacionInstalaciones : this.matrizCombinacionInstalaciones) {
-            calcularDistanciasNodos(matrizCombinacionInstalaciones);
             double pmedian = calcularPmedian(matrizCombinacionInstalaciones);
             double pdispersion = calcularPdispersion(matrizCombinacionInstalaciones);
             Solucion solucion = new Solucion(pmedian, pdispersion, matrizCombinacionInstalaciones);
-            meterSolucion(solucion);
+            boolean metida = meterSolucion(solucion);
+            if(metida){
+                normalizarPmedian(solucion);
+                normalizarPdispersion(solucion);
+            }
         }
         return new Date().getTime() - inicioEjecucion;
     }
@@ -193,13 +170,12 @@ public class Grafo {
                         boolean[] instalaciones = this.mejor_solucion.getInstalaciones().clone();
                         instalaciones[i] = false;
                         instalaciones[j] = true;
-                        calcularDistanciasNodos(instalaciones);
                         double pmedian = calcularPmedian(instalaciones);
                         double pdispersion = calcularPdispersion(instalaciones);
                         Solucion nuevaMejorSolucion = new Solucion(pmedian, pdispersion, instalaciones);
                         frenteParetoMejorado = meterSolucion(nuevaMejorSolucion);
                         if(frenteParetoMejorado)
-                            calcularMejorSolucion();
+                            this.mejor_solucion = nuevaMejorSolucion;
                     }
         }
         return new Date().getTime() - inicioEjecucion;
