@@ -1,0 +1,19 @@
+Frente de Pareto:
+	Numero de soluciones: 5
+	Tiempo de ejecucion (sg): 0
+		Solucion -> pmedian: 5990.0 pdispersion: 22.0
+		Solucion -> pmedian: 6088.0 pdispersion: 32.0
+		Solucion -> pmedian: 7306.0 pdispersion: 35.0
+		Solucion -> pmedian: 5919.0 pdispersion: 3.0
+		Solucion -> pmedian: 6737.0 pdispersion: 34.0
+Busqueda local:
+	Numero de soluciones: 8
+	Tiempo de ejecucion (sg): 3
+		Solucion -> pmedian: 4711.0 pdispersion: 37.0
+		Solucion -> pmedian: 4645.0 pdispersion: 35.0
+		Solucion -> pmedian: 4568.0 pdispersion: 33.0
+		Solucion -> pmedian: 4518.0 pdispersion: 11.0
+		Solucion -> pmedian: 4584.0 pdispersion: 34.0
+		Solucion -> pmedian: 4677.0 pdispersion: 36.0
+		Solucion -> pmedian: 4969.0 pdispersion: 39.0
+		Solucion -> pmedian: 4748.0 pdispersion: 38.0

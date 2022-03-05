@@ -1,0 +1,30 @@
+Frente de Pareto:
+	Numero de soluciones: 13
+	Tiempo de ejecucion (sg): 0
+		Solucion -> pmedian: 10904.0 pdispersion: 13.0
+		Solucion -> pmedian: 15144.0 pdispersion: 29.0
+		Solucion -> pmedian: 11851.0 pdispersion: 21.0
+		Solucion -> pmedian: 10736.0 pdispersion: 8.0
+		Solucion -> pmedian: 12836.0 pdispersion: 22.0
+		Solucion -> pmedian: 12932.0 pdispersion: 24.0
+		Solucion -> pmedian: 13182.0 pdispersion: 26.0
+		Solucion -> pmedian: 10777.0 pdispersion: 10.0
+		Solucion -> pmedian: 13841.0 pdispersion: 27.0
+		Solucion -> pmedian: 12910.0 pdispersion: 23.0
+		Solucion -> pmedian: 16091.0 pdispersion: 31.0
+		Solucion -> pmedian: 11653.0 pdispersion: 18.0
+		Solucion -> pmedian: 11133.0 pdispersion: 17.0
+Busqueda local:
+	Numero de soluciones: 11
+	Tiempo de ejecucion (sg): 9
+		Solucion -> pmedian: 11851.0 pdispersion: 21.0
+		Solucion -> pmedian: 15178.0 pdispersion: 31.0
+		Solucion -> pmedian: 12404.0 pdispersion: 23.0
+		Solucion -> pmedian: 12526.0 pdispersion: 29.0
+		Solucion -> pmedian: 11053.0 pdispersion: 19.0
+		Solucion -> pmedian: 8925.0 pdispersion: 12.0
+		Solucion -> pmedian: 8959.0 pdispersion: 16.0
+		Solucion -> pmedian: 8933.0 pdispersion: 13.0
+		Solucion -> pmedian: 8907.0 pdispersion: 11.0
+		Solucion -> pmedian: 8881.0 pdispersion: 8.0
+		Solucion -> pmedian: 8872.0 pdispersion: 7.0

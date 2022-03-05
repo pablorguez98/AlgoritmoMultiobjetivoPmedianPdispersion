@@ -1,0 +1,11 @@
+Frente de Pareto:
+	Numero de soluciones: 4
+	Tiempo de ejecucion (sg): 0
+		Solucion -> pmedian: 4351.0 pdispersion: 4.0
+		Solucion -> pmedian: 4336.0 pdispersion: 3.0
+		Solucion -> pmedian: 4193.0 pdispersion: 1.0
+		Solucion -> pmedian: 4216.0 pdispersion: 2.0
+Busqueda local:
+	Numero de soluciones: 1
+	Tiempo de ejecucion (sg): 314
+		Solucion -> pmedian: 2988.0 pdispersion: 5.0
