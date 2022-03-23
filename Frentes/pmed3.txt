@@ -1,25 +1,32 @@
 Frente de Pareto:
-	Numero de soluciones: 8
-	Tiempo de ejecucion (sg): 0
-		Solucion -> pmedian: 5692.0 pdispersion: 74.0
-		Solucion -> pmedian: 5552.0 pdispersion: 66.0
-		Solucion -> pmedian: 5810.0 pdispersion: 86.0
-		Solucion -> pmedian: 5372.0 pdispersion: 61.0
-		Solucion -> pmedian: 5293.0 pdispersion: 28.0
-		Solucion -> pmedian: 5747.0 pdispersion: 79.0
-		Solucion -> pmedian: 5328.0 pdispersion: 53.0
-		Solucion -> pmedian: 6458.0 pdispersion: 102.0
+	Numero de soluciones: 12
+	Tiempo de ejecucion (sg): 5
+		Solucion -> pmedian: 5991.0 pdispersion: 172.0
+		Solucion -> pmedian: 7692.0 pdispersion: 186.0
+		Solucion -> pmedian: 5906.0 pdispersion: 170.0
+		Solucion -> pmedian: 7159.0 pdispersion: 176.0
+		Solucion -> pmedian: 5662.0 pdispersion: 136.0
+		Solucion -> pmedian: 5822.0 pdispersion: 157.0
+		Solucion -> pmedian: 5801.0 pdispersion: 146.0
+		Solucion -> pmedian: 5733.0 pdispersion: 145.0
+		Solucion -> pmedian: 5451.0 pdispersion: 45.0
+		Solucion -> pmedian: 5546.0 pdispersion: 61.0
+		Solucion -> pmedian: 5658.0 pdispersion: 84.0
+		Solucion -> pmedian: 5373.0 pdispersion: 36.0
 Busqueda local:
-	Numero de soluciones: 11
+	Numero de soluciones: 14
 	Tiempo de ejecucion (sg): 0
-		Solucion -> pmedian: 4338.0 pdispersion: 78.0
-		Solucion -> pmedian: 5180.0 pdispersion: 122.0
-		Solucion -> pmedian: 5298.0 pdispersion: 124.0
-		Solucion -> pmedian: 5177.0 pdispersion: 118.0
-		Solucion -> pmedian: 5091.0 pdispersion: 116.0
-		Solucion -> pmedian: 5075.0 pdispersion: 114.0
-		Solucion -> pmedian: 4637.0 pdispersion: 108.0
-		Solucion -> pmedian: 4626.0 pdispersion: 103.0
-		Solucion -> pmedian: 4606.0 pdispersion: 96.0
-		Solucion -> pmedian: 4533.0 pdispersion: 93.0
-		Solucion -> pmedian: 4444.0 pdispersion: 90.0
+		Solucion -> pmedian: 5991.0 pdispersion: 172.0
+		Solucion -> pmedian: 7692.0 pdispersion: 186.0
+		Solucion -> pmedian: 5906.0 pdispersion: 170.0
+		Solucion -> pmedian: 7159.0 pdispersion: 176.0
+		Solucion -> pmedian: 5662.0 pdispersion: 136.0
+		Solucion -> pmedian: 5822.0 pdispersion: 157.0
+		Solucion -> pmedian: 5801.0 pdispersion: 146.0
+		Solucion -> pmedian: 5733.0 pdispersion: 145.0
+		Solucion -> pmedian: 5451.0 pdispersion: 45.0
+		Solucion -> pmedian: 5546.0 pdispersion: 61.0
+		Solucion -> pmedian: 5658.0 pdispersion: 84.0
+		Solucion -> pmedian: 5373.0 pdispersion: 36.0
+		Solucion -> pmedian: 7967.0 pdispersion: 189.0
+		Solucion -> pmedian: 7663.0 pdispersion: 177.0

@@ -1,9 +1,12 @@
 Frente de Pareto:
-	Numero de soluciones: 2
-	Tiempo de ejecucion (sg): 0
-		Solucion -> pmedian: 4334.0 pdispersion: 1.0
-		Solucion -> pmedian: 4535.0 pdispersion: 2.0
+	Numero de soluciones: 3
+	Tiempo de ejecucion (sg): 28252
+		Solucion -> pmedian: 5523.0 pdispersion: 19.0
+		Solucion -> pmedian: 4666.0 pdispersion: 18.0
+		Solucion -> pmedian: 4559.0 pdispersion: 17.0
 Busqueda local:
-	Numero de soluciones: 1
-	Tiempo de ejecucion (sg): 1240
-		Solucion -> pmedian: 3037.0 pdispersion: 4.0
+	Numero de soluciones: 3
+	Tiempo de ejecucion (sg): 687
+		Solucion -> pmedian: 4666.0 pdispersion: 18.0
+		Solucion -> pmedian: 4559.0 pdispersion: 17.0
+		Solucion -> pmedian: 5012.0 pdispersion: 19.0

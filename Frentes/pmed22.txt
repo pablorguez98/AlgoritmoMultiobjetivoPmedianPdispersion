@@ -1,28 +1,35 @@
 Frente de Pareto:
-	Numero de soluciones: 10
-	Tiempo de ejecucion (sg): 0
-		Solucion -> pmedian: 15162.0 pdispersion: 39.0
-		Solucion -> pmedian: 13377.0 pdispersion: 36.0
-		Solucion -> pmedian: 11973.0 pdispersion: 28.0
-		Solucion -> pmedian: 11860.0 pdispersion: 21.0
-		Solucion -> pmedian: 12736.0 pdispersion: 30.0
-		Solucion -> pmedian: 11129.0 pdispersion: 11.0
+	Numero de soluciones: 16
+	Tiempo de ejecucion (sg): 557
+		Solucion -> pmedian: 14071.0 pdispersion: 65.0
+		Solucion -> pmedian: 16626.0 pdispersion: 92.0
+		Solucion -> pmedian: 14118.0 pdispersion: 72.0
+		Solucion -> pmedian: 16523.0 pdispersion: 85.0
+		Solucion -> pmedian: 14211.0 pdispersion: 82.0
+		Solucion -> pmedian: 13226.0 pdispersion: 31.0
+		Solucion -> pmedian: 13592.0 pdispersion: 32.0
 		Solucion -> pmedian: 10845.0 pdispersion: 8.0
-		Solucion -> pmedian: 11291.0 pdispersion: 20.0
-		Solucion -> pmedian: 11914.0 pdispersion: 24.0
-		Solucion -> pmedian: 16034.0 pdispersion: 40.0
+		Solucion -> pmedian: 11349.0 pdispersion: 20.0
+		Solucion -> pmedian: 12298.0 pdispersion: 26.0
+		Solucion -> pmedian: 12898.0 pdispersion: 27.0
+		Solucion -> pmedian: 11894.0 pdispersion: 22.0
+		Solucion -> pmedian: 11092.0 pdispersion: 14.0
+		Solucion -> pmedian: 13161.0 pdispersion: 28.0
+		Solucion -> pmedian: 12277.0 pdispersion: 25.0
+		Solucion -> pmedian: 12273.0 pdispersion: 23.0
 Busqueda local:
-	Numero de soluciones: 12
-	Tiempo de ejecucion (sg): 7
-		Solucion -> pmedian: 14884.0 pdispersion: 40.0
-		Solucion -> pmedian: 13361.0 pdispersion: 37.0
-		Solucion -> pmedian: 12180.0 pdispersion: 34.0
-		Solucion -> pmedian: 11970.0 pdispersion: 31.0
-		Solucion -> pmedian: 11835.0 pdispersion: 30.0
-		Solucion -> pmedian: 11587.0 pdispersion: 26.0
-		Solucion -> pmedian: 11585.0 pdispersion: 25.0
-		Solucion -> pmedian: 9388.0 pdispersion: 19.0
-		Solucion -> pmedian: 9433.0 pdispersion: 23.0
-		Solucion -> pmedian: 9423.0 pdispersion: 22.0
-		Solucion -> pmedian: 9336.0 pdispersion: 17.0
+	Numero de soluciones: 13
+	Tiempo de ejecucion (sg): 4
+		Solucion -> pmedian: 14071.0 pdispersion: 65.0
+		Solucion -> pmedian: 16626.0 pdispersion: 92.0
+		Solucion -> pmedian: 14118.0 pdispersion: 72.0
+		Solucion -> pmedian: 16523.0 pdispersion: 85.0
+		Solucion -> pmedian: 14211.0 pdispersion: 82.0
+		Solucion -> pmedian: 12298.0 pdispersion: 26.0
+		Solucion -> pmedian: 12277.0 pdispersion: 25.0
+		Solucion -> pmedian: 13200.0 pdispersion: 38.0
+		Solucion -> pmedian: 12306.0 pdispersion: 30.0
+		Solucion -> pmedian: 11320.0 pdispersion: 23.0
+		Solucion -> pmedian: 10938.0 pdispersion: 21.0
+		Solucion -> pmedian: 9623.0 pdispersion: 16.0
 		Solucion -> pmedian: 8819.0 pdispersion: 14.0
