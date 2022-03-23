@@ -15,8 +15,6 @@ public class Grafo {
     private double sumatorioDistanciasMaximas;
     private ArrayList<Solucion> soluciones = new ArrayList<>();
     private ArrayList<Solucion> solucionesBorradas = new ArrayList<>();
-    private boolean [][] matrizCombinacionInstalaciones;
-    private final int numeroCombinaciones = 1000;
 
     //Constructor
     public Grafo(int nodos, int instalaciones){
@@ -24,7 +22,6 @@ public class Grafo {
         this.instalaciones = instalaciones;
         this.distancias = new double[nodos][nodos];
         this.puntosInteres = new Nodo[nodos];
-        this.matrizCombinacionInstalaciones = new boolean [this.numeroCombinaciones][nodos];
         for(int i = 0; i < nodos; i++) {
             this.puntosInteres[i] = new Nodo();
             for (int j = 0; j < nodos; j++) {
@@ -66,16 +63,49 @@ public class Grafo {
         }
     }
 
-    public void calcularInstalaciones(){
+    public long frentePareto(){
+        double alfa = 0.0;
         Random random = new Random(13);
-        for(int i = 0; i < this.numeroCombinaciones; i++)
-            for (int j = 0; j < this.instalaciones; j++) {
-                int nodoInstalacion = random.nextInt(this.nodos);
-                if (!this.matrizCombinacionInstalaciones[i][nodoInstalacion])
-                    this.matrizCombinacionInstalaciones[i][nodoInstalacion] = true;
-                else
-                    j--;
+        ArrayList<Integer> conjuntoInstalaciones = new ArrayList<>();
+        boolean[] instalaciones = new boolean[this.nodos];
+        long inicioEjecucion = new Date().getTime();
+        while(alfa <= 1.0){
+            for(Integer n: conjuntoInstalaciones)
+                instalaciones[n] = false;
+            conjuntoInstalaciones.clear();
+            int nodoInstalacionOrigen = random.nextInt(this.nodos);
+            instalaciones[nodoInstalacionOrigen] = true;
+            conjuntoInstalaciones.add(nodoInstalacionOrigen);
+            for(int i = 1; i < this.instalaciones; i++){
+                double funcionAgregada = Double.MIN_VALUE;
+                int nuevaInstalacion = random.nextInt(this.nodos);
+                for(int j = 0; j < this.nodos; j++){
+                    if(instalaciones[j] == false){
+                        instalaciones[j] = true;
+                        double pmedianNormalizada = (calcularPmedian(instalaciones)-0)/(this.sumatorioDistanciasMaximas-0);
+                        double pdispersionNormalizada = (calcularPdispersion(instalaciones) - this.distanciaMinimaGeneral)/(this.distanciaMaximaGeneral-this.distanciaMinimaGeneral);
+                        double funcionAgregadaAux = alfa * -pmedianNormalizada + (1.0-alfa) * pdispersionNormalizada;
+                        if(Double.compare(funcionAgregada, funcionAgregadaAux) < 0) {
+                            funcionAgregada = funcionAgregadaAux;
+                            nuevaInstalacion = j;
+                        }
+                        instalaciones[j] = false;
+                    }
+                }
+                instalaciones[nuevaInstalacion] = true;
+                conjuntoInstalaciones.add(nuevaInstalacion);
             }
+            double pmedian = calcularPmedian(instalaciones.clone());
+            double pdispersion = calcularPdispersion(instalaciones.clone());
+            Solucion solucion = new Solucion(pmedian, pdispersion, instalaciones.clone());
+            boolean metida = meterSolucion(solucion);
+            if(metida){
+                normalizarPmedian(solucion);
+                normalizarPdispersion(solucion);
+            }
+            alfa += 0.001;
+        }
+        return new Date().getTime() - inicioEjecucion;
     }
 
     private double calcularPmedian(boolean[] instalaciones){
@@ -102,7 +132,7 @@ public class Grafo {
 
     private double normalizarPmedian(Solucion solucion){
         double pmedian = solucion.getPmedian();
-        double pmedianNormalizada = (pmedian-this.sumatorioDistanciasMinimas)/(this.sumatorioDistanciasMaximas-this.sumatorioDistanciasMinimas);
+        double pmedianNormalizada = (pmedian-0)/(this.sumatorioDistanciasMaximas-0); //Bug
         solucion.setPmedianNormalizada(pmedianNormalizada);
         return pmedianNormalizada;
     }
@@ -131,7 +161,7 @@ public class Grafo {
         this.soluciones.add(solucion);
         return true;
     }
-
+    /*
     public long frentePareto(){
         long inicioEjecucion = new Date().getTime();
         for (boolean[] matrizCombinacionInstalaciones : this.matrizCombinacionInstalaciones) {
@@ -145,15 +175,14 @@ public class Grafo {
             }
         }
         return new Date().getTime() - inicioEjecucion;
-    }
+    }*/
 
     private void calcularMejorSolucion(){
         double valorMejorSolucion = Double.MIN_VALUE;
         for(Solucion s: this.soluciones){
-            double valorS = s.getPmedianNormalizada() + s.getPdispersionNormalizada();
-            if(Double.compare(valorMejorSolucion, valorS) < 0){
+            if(Double.compare(valorMejorSolucion, s.getPmedianNormalizada() + s.getPdispersionNormalizada()) < 0){
                 this.mejor_solucion = s;
-                valorMejorSolucion = valorS;
+                valorMejorSolucion = s.getPmedianNormalizada() + s.getPdispersionNormalizada();
             }
         }
     }
@@ -174,8 +203,11 @@ public class Grafo {
                         double pdispersion = calcularPdispersion(instalaciones);
                         Solucion nuevaMejorSolucion = new Solucion(pmedian, pdispersion, instalaciones);
                         frenteParetoMejorado = meterSolucion(nuevaMejorSolucion);
-                        if(frenteParetoMejorado)
+                        if(frenteParetoMejorado) {
+                            normalizarPmedian(nuevaMejorSolucion);
+                            normalizarPdispersion(nuevaMejorSolucion);
                             this.mejor_solucion = nuevaMejorSolucion;
+                        }
                     }
         }
         return new Date().getTime() - inicioEjecucion;
