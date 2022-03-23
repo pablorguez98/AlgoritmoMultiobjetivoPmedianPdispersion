@@ -57,7 +57,6 @@ public class Main {
                  */
                 if(mapa != null){
                     mapa.calcularDistancias();
-                    mapa.calcularInstalaciones();
                     long ejecucionFP = mapa.frentePareto()/1000;
                     ArrayList<Solucion> solucionesFP = (ArrayList<Solucion>) mapa.getSoluciones().clone();
                     int numeroFP = solucionesFP.size();
