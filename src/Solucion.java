@@ -1,52 +1,40 @@
 public class Solucion {
-    //Atributos
-    private double pmedian;
-    private double pmedianNormalizada;
-    private double pdispersion;
-    private double pdispersionNormalizada;
-    private boolean[] instalaciones;
+    //Atributos de la clase Solucion.
+    private final double pmedian, pdispersion, pmedianNormalizado, pdispersionNormalizado;
+    private final boolean[] instalaciones;
 
-    //Constructor
-    public Solucion(double pmedian, double pdispersion, boolean[] instalaciones){
+    //Constructor de la clase Solucion.
+    public Solucion(double pmedian, double pdispersion, double pmedianNormalizado, double pdispersionNormalizado, boolean[] instalaciones){
         this.pmedian = pmedian;
         this.pdispersion = pdispersion;
-        this.instalaciones = instalaciones;
+        this.pmedianNormalizado = pmedianNormalizado;
+        this.pdispersionNormalizado = pdispersionNormalizado;
+        this.instalaciones = instalaciones.clone();
     }
 
-    //Get y Set
+    //Métodos get y set de la clase Solucion.
+    //Método que devuelve el valor de la función objetivo pmedian de la solución sin normalizar.
     public double getPmedian() {
         return this.pmedian;
     }
 
+    //Método que devuelve el valor de la función objetivo pedispersion de la solución sin normalizar.
     public double getPdispersion() {
         return this.pdispersion;
     }
 
+    //Método que devuelve el valor de la función objetivo pmedian de la solución normalizado.
+    public double getPmedianNormalizado() {
+        return this.pmedianNormalizado;
+    }
+
+    //Método que devuelve el valor de la función objetivo pdispersion de la solución normalizado.
+    public double getPdispersionNormalizado() {
+        return this.pdispersionNormalizado;
+    }
+
+    //Método que devuelve el conjunto de instalaciones de una solución.
     public boolean[] getInstalaciones() {
         return this.instalaciones;
-    }
-
-    public void setPmedian(double pmedian) {
-        this.pmedian = pmedian;
-    }
-
-    public void setPdispersion(double pdispersion) {
-        this.pdispersion = pdispersion;
-    }
-
-    public double getPdispersionNormalizada() {
-        return this.pdispersionNormalizada;
-    }
-
-    public double getPmedianNormalizada() {
-        return this.pmedianNormalizada;
-    }
-
-    public void setPmedianNormalizada(double pmedianNormalizada) {
-        this.pmedianNormalizada = pmedianNormalizada;
-    }
-
-    public void setPdispersionNormalizada(double pdispersionNormalizada) {
-        this.pdispersionNormalizada = pdispersionNormalizada;
     }
 }
