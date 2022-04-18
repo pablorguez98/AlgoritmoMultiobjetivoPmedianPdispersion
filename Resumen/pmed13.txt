@@ -1,0 +1,14 @@
+Grafo pmed13:
+	Frente de Pareto Aleatorio (antes de la busqueda local):
+		Numero de soluciones --> 6 soluciones.
+		Tiempo de ejecucion --> 0 segundos.
+	Frente de Pareto Greedy (antes de la busqueda local):
+		Numero de soluciones --> 3 soluciones.
+		Tiempo de ejecucion --> 42 segundos.
+	Frente de Pareto Aleatorio (despues de la busqueda local):
+		Numero de soluciones --> 6 soluciones.
+		Tiempo de ejecucion --> 15 segundos.
+	Frente de Pareto Greedy (despues de la busqueda local):
+		Numero de soluciones --> 6 soluciones.
+		Tiempo de ejecucion --> 17 segundos.
+

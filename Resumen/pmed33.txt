@@ -1,0 +1,14 @@
+Grafo pmed33:
+	Frente de Pareto Aleatorio (antes de la busqueda local):
+		Numero de soluciones --> 4 soluciones.
+		Tiempo de ejecucion --> 0 segundos.
+	Frente de Pareto Greedy (antes de la busqueda local):
+		Numero de soluciones --> 2 soluciones.
+		Tiempo de ejecucion --> 1251 segundos.
+	Frente de Pareto Aleatorio (despues de la busqueda local):
+		Numero de soluciones --> 2 soluciones.
+		Tiempo de ejecucion --> 472 segundos.
+	Frente de Pareto Greedy (despues de la busqueda local):
+		Numero de soluciones --> 2 soluciones.
+		Tiempo de ejecucion --> 387 segundos.
+
