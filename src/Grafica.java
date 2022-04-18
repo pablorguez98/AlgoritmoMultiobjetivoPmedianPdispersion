@@ -39,7 +39,7 @@ public class Grafica {
         renderer.setSeriesPaint(1, BUSQUEDA_LOCAL);
     }
 
-    public JFreeChart crear_grafica(XYSeriesCollection series, String grafo){
+    public JFreeChart crearGrafica(XYSeriesCollection series, String grafo){
         grafica = ChartFactory.createXYLineChart(grafo,"P-median","P-dispersion", series, PlotOrientation.VERTICAL,true,false,false);
         grafica.setBackgroundPaint(FONDO_GRAFICA);
         configurarGuias((XYPlot) grafica.getPlot());
