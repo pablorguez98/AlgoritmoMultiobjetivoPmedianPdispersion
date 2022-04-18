@@ -3,29 +3,27 @@ import java.util.Date;
 import java.util.Random;
 
 public class Grafo {
-    //Atributos
-    private final int nodos;
-    private final int instalaciones;
+    //Atributos de la clase Grafo.
+    private final int numeroNodos, numeroInstalaciones;
     private double[][] distancias;
-    private Solucion mejor_solucion;
-    private Nodo[] puntosInteres;
-    private double distanciaMinimaGeneral;
-    private double distanciaMaximaGeneral;
-    private double sumatorioDistanciasMinimas;
-    private double sumatorioDistanciasMaximas;
-    private ArrayList<Solucion> soluciones = new ArrayList<>();
-    private ArrayList<Solucion> solucionesBorradas = new ArrayList<>();
+    private Nodo[] nodos;
+    private double distanciaMinimaGeneral, distanciaMaximaGeneral, sumaDistanciasMinimas, sumaDistanciasMaximas;
+    private ArrayList<Solucion> FPAleatorio = new ArrayList<>(), FPGreedy = new ArrayList<>(), solucionesBoradas = new ArrayList<>();
 
-    //Constructor
-    public Grafo(int nodos, int instalaciones){
-        this.nodos = nodos;
-        this.instalaciones = instalaciones;
-        this.distancias = new double[nodos][nodos];
-        this.puntosInteres = new Nodo[nodos];
-        for(int i = 0; i < nodos; i++) {
-            this.puntosInteres[i] = new Nodo();
-            for (int j = 0; j < nodos; j++) {
-                if (i == j)
+    //Constructor de la clase Grafo.
+    public Grafo(int numeroNodos, int numeroInstalaciones){
+        this.numeroNodos = numeroNodos;
+        this.numeroInstalaciones = numeroInstalaciones;
+        this.distancias = new double[numeroNodos][numeroNodos];
+        this.nodos = new Nodo[numeroNodos];
+        this.distanciaMinimaGeneral = Double.MAX_VALUE;
+        this.distanciaMaximaGeneral = Double.MIN_VALUE;
+        this.sumaDistanciasMinimas = 0;
+        this.sumaDistanciasMaximas = 0;
+        for(int i = 0; i < numeroNodos; i++){
+            this.nodos[i] = new Nodo();
+            for(int j = 0; j < numeroNodos; j++){
+                if(i == j)
                     this.distancias[i][j] = 0;
                 else
                     this.distancias[i][j] = Double.MAX_VALUE;
@@ -33,181 +31,216 @@ public class Grafo {
         }
     }
 
-    //Get y set
-    public ArrayList<Solucion> getSoluciones() {
-        return this.soluciones;
+    //Métodos get y set de la clase Grafo.
+    //Método que devuelve el Frente de Pareto generado con instalaciones aleatorias.
+    public ArrayList<Solucion> getFPAleatorio(){
+        return this.FPAleatorio;
     }
 
-    //Metodos
-    public void meterDistancia(int nodoA, int nodoB, double distancia){
-        this.distancias[nodoA][nodoB] = distancia;
-        this.distancias[nodoB][nodoA] = distancia;
+    //Método que devuelve el Frente de pareto generado con instalaciones greedy.
+    public ArrayList<Solucion> getFPGreedy(){
+        return this.FPGreedy;
     }
 
+    //Método que modifica la distancia entre dos nodos del grafo.
+    public void modificarDistancia(int nodoA, int nodoB, double distancia){
+        this.distancias[nodoA][nodoB] = Math.min(distancia, this.distancias[nodoA][nodoB]);
+        this.distancias[nodoB][nodoA] = Math.min(distancia, this.distancias[nodoB][nodoA]);
+    }
+
+    //Método que aplica el algoritmo de Floyd-Warshall para el cálculo de las distancias restantes del grafo.
     public void calcularDistancias(){
-        for(int i = 0; i < this.nodos; i++)
-            for(int j = 0; j < this.nodos; j++)
-                for(int k = 0; k < this.nodos; k++)
-                    this.distancias[i][j] = Math.min(this.distancias[i][j], this.distancias[i][k] + this.distancias[k][j]);
-
-        for(int i = 0; i < this.nodos; i ++){
-            for(int j = 0; j < this.nodos; j++)
-                if (i != j) {
-                    this.puntosInteres[i].setDistanciaMinima(Math.min(this.puntosInteres[i].getDistanciaMinima(), this.distancias[i][j]));
-                    this.puntosInteres[i].setDistanciaMaxima(Math.max(this.puntosInteres[i].getDistanciaMaxima(), this.distancias[i][j]));
-                    this.distanciaMinimaGeneral = Math.min(this.distanciaMinimaGeneral, this.puntosInteres[i].getDistanciaMinima());
-                    this.distanciaMaximaGeneral = Math.max(this.distanciaMaximaGeneral, this.puntosInteres[i].getDistanciaMaxima());
+        //PASO 1: Floyd-Warshall --> se busca si la distancia de A a B es más corta si paso antes por C.
+        for(int i = 0; i < this.numeroNodos; i++)
+            for(int j = 0; j < this.numeroNodos; j++)
+                for(int k = 0; k < this.numeroNodos; k++)
+                    this.distancias[i][j] = Math.min(this.distancias[i][j], (this.distancias[i][k]+this.distancias[k][j]));
+        //PASO 2: Se mira cuál es la distancia mínima y máxima del grafo, tanto particular como general.
+        for(int i = 0; i < this.numeroNodos; i++){
+            for(int j = 0; j < this.numeroNodos; j++)
+                if(i != j){
+                    this.nodos[i].setDistanciaMinima(Math.min(this.nodos[i].getDistanciaMinima(), this.distancias[i][j]));
+                    this.nodos[i].setDistanciaMaxima(Math.max(this.nodos[i].getDistanciaMaxima(), this.distancias[i][j]));
+                    this.distanciaMinimaGeneral = Math.min(this.distanciaMinimaGeneral, this.nodos[i].getDistanciaMinima());
+                    this.distanciaMaximaGeneral = Math.max(this.distanciaMaximaGeneral, this.nodos[i].getDistanciaMaxima());
                 }
-            this.sumatorioDistanciasMinimas = this.sumatorioDistanciasMinimas + this.puntosInteres[i].getDistanciaMinima();
-            this.sumatorioDistanciasMaximas = this.sumatorioDistanciasMaximas + this.puntosInteres[i].getDistanciaMaxima();
+            this.sumaDistanciasMinimas += this.nodos[i].getDistanciaMinima();
+            this.sumaDistanciasMaximas += this.nodos[i].getDistanciaMaxima();
         }
     }
 
-    public long frentePareto(){
-        double alfa = 0.0;
-        Random random = new Random(13);
-        ArrayList<Integer> conjuntoInstalaciones = new ArrayList<>();
-        boolean[] instalaciones = new boolean[this.nodos];
-        long inicioEjecucion = new Date().getTime();
-        while(alfa <= 1.0){
-            for(Integer n: conjuntoInstalaciones)
-                instalaciones[n] = false;
-            conjuntoInstalaciones.clear();
-            int nodoInstalacionOrigen = random.nextInt(this.nodos);
-            instalaciones[nodoInstalacionOrigen] = true;
-            conjuntoInstalaciones.add(nodoInstalacionOrigen);
-            for(int i = 1; i < this.instalaciones; i++){
-                double funcionAgregada = Double.MIN_VALUE;
-                int nuevaInstalacion = random.nextInt(this.nodos);
-                for(int j = 0; j < this.nodos; j++){
-                    if(instalaciones[j] == false){
-                        instalaciones[j] = true;
-                        double pmedianNormalizada = (calcularPmedian(instalaciones)-0)/(this.sumatorioDistanciasMaximas-0);
-                        double pdispersionNormalizada = (calcularPdispersion(instalaciones) - this.distanciaMinimaGeneral)/(this.distanciaMaximaGeneral-this.distanciaMinimaGeneral);
-                        double funcionAgregadaAux = alfa * -pmedianNormalizada + (1.0-alfa) * pdispersionNormalizada;
-                        if(Double.compare(funcionAgregada, funcionAgregadaAux) < 0) {
-                            funcionAgregada = funcionAgregadaAux;
-                            nuevaInstalacion = j;
-                        }
-                        instalaciones[j] = false;
-                    }
-                }
-                instalaciones[nuevaInstalacion] = true;
-                conjuntoInstalaciones.add(nuevaInstalacion);
-            }
-            double pmedian = calcularPmedian(instalaciones.clone());
-            double pdispersion = calcularPdispersion(instalaciones.clone());
-            Solucion solucion = new Solucion(pmedian, pdispersion, instalaciones.clone());
-            boolean metida = meterSolucion(solucion);
-            if(metida){
-                normalizarPmedian(solucion);
-                normalizarPdispersion(solucion);
-            }
-            alfa += 0.001;
-        }
-        return new Date().getTime() - inicioEjecucion;
-    }
-
+    //Método que calcula el valor de la función objetivo pmedian.
     private double calcularPmedian(boolean[] instalaciones){
         double pmedian = 0;
-        for(int i = 0; i < this.nodos; i++)
+        double distanciaMinima;
+        for(int i = 0; i < this.numeroNodos; i++)
             if(!instalaciones[i]){
-                double distanciaMinima = Double.MAX_VALUE;
-                for(int j = 0; j < this.nodos; j++)
+                distanciaMinima = Double.MAX_VALUE;
+                for(int j = 0; j < this.numeroNodos; j++)
                     if(instalaciones[j])
-                        distanciaMinima = Math.min(this.distancias[i][j], distanciaMinima);
-                pmedian = pmedian + distanciaMinima;
+                        distanciaMinima = Math.min(distanciaMinima, this.distancias[i][j]);
+                pmedian += distanciaMinima;
             }
         return pmedian;
     }
 
+    //Método que calcula el valor de la función objetivo pdispersion.
     private double calcularPdispersion(boolean[] instalaciones){
         double pdispersion = Double.MAX_VALUE;
-        for(int i = 0; i < this.nodos; i++)
-            for(int j = i+1; j < this.nodos && instalaciones[i]; j++)
+        for(int i = 0; i < this.numeroNodos; i++)
+            for(int j = i+1; j < this.numeroNodos && instalaciones[i]; j++)
                 if(instalaciones[j])
                     pdispersion = Math.min(pdispersion, this.distancias[i][j]);
         return pdispersion;
     }
 
-    private double normalizarPmedian(Solucion solucion){
-        double pmedian = solucion.getPmedian();
-        double pmedianNormalizada = (pmedian-0)/(this.sumatorioDistanciasMaximas-0); //Bug
-        solucion.setPmedianNormalizada(pmedianNormalizada);
-        return pmedianNormalizada;
+    //Método que normaliza el valor de la función objetivo pmedian.
+    private double normalizarPmedian(double pmedian){
+        //return (pmedian - this.sumaDistanciasMinimas)/(this.sumaDistanciasMaximas-this.sumaDistanciasMinimas);
+        return (pmedian - 0)/(this.sumaDistanciasMaximas - 0);
     }
 
-    private double normalizarPdispersion(Solucion solucion){
-        double pdispersion = solucion.getPdispersion();
-        double pdispersionNormalizada = (pdispersion - this.distanciaMinimaGeneral)/(this.distanciaMaximaGeneral-this.distanciaMinimaGeneral);
-        solucion.setPdispersionNormalizada(pdispersionNormalizada);
-        return pdispersionNormalizada;
+    //Método que normaliza el valor de la función objetivo pdispersion.
+    private double normalizarPdispersion(double pdispersion){
+        return (pdispersion - this.distanciaMinimaGeneral)/(this.distanciaMaximaGeneral - this.distanciaMinimaGeneral);
     }
 
-    private boolean meterSolucion(Solucion solucion){
-        this.solucionesBorradas.clear();
-        double pmedian2 = solucion.getPmedian();
-        double pdispersion2 = solucion.getPdispersion();
-        for(Solucion s: this.soluciones){
-            double pmedian1 = s.getPmedian();
-            double pdispersion1 = s.getPdispersion();
-            if(Double.compare(pmedian1, pmedian2) <= 0 && Double.compare(pdispersion1, pdispersion2) >= 0)
+    //Método que evalúa si una solución debe ser introducida o no.
+    private boolean meterSolucion(Solucion solucion, ArrayList<Solucion> soluciones){
+        this.solucionesBoradas.clear();
+        double pmedianSolucion = solucion.getPmedian(), pdispersionSolucion = solucion.getPdispersion(), pmedianS, pdispersionS;
+        for(Solucion s: soluciones){
+            pmedianS = s.getPmedian();
+            pdispersionS = s.getPdispersion();
+            if(Double.compare(pmedianS, pmedianSolucion) <= 0 && Double.compare(pdispersionS, pdispersionSolucion) >= 0)
                 return false;
-            else if(Double.compare(pmedian1,pmedian2) >= 0 && Double.compare(pdispersion1,pdispersion2) <= 0)
-                this.solucionesBorradas.add(s);
+            else if(Double.compare(pmedianS, pmedianSolucion) >= 0 && Double.compare(pdispersionS, pdispersionSolucion) <= 0)
+                this.solucionesBoradas.add(s);
         }
-        for(Solucion borrar: this.solucionesBorradas)
-            this.soluciones.remove(borrar);
-        this.soluciones.add(solucion);
+        for(Solucion solucionBorrar: this.solucionesBoradas)
+            soluciones.remove(solucionBorrar);
+        soluciones.add(solucion);
         return true;
     }
-    /*
-    public long frentePareto(){
+
+    //Método que genera un Frente de Pareto con instalaciones aleatorias.
+    public long FrenteParetoAleatorio(){
+        double alfa = 0.0;
+        Random random = new Random(13);
+        ArrayList<Integer> conjuntoInstalaciones = new ArrayList<>();
+        boolean[] instalaciones = new boolean[this.numeroNodos];
+        int instalacionPartida;
         long inicioEjecucion = new Date().getTime();
-        for (boolean[] matrizCombinacionInstalaciones : this.matrizCombinacionInstalaciones) {
-            double pmedian = calcularPmedian(matrizCombinacionInstalaciones);
-            double pdispersion = calcularPdispersion(matrizCombinacionInstalaciones);
-            Solucion solucion = new Solucion(pmedian, pdispersion, matrizCombinacionInstalaciones);
-            boolean metida = meterSolucion(solucion);
-            if(metida){
-                normalizarPmedian(solucion);
-                normalizarPdispersion(solucion);
+        while(alfa <= 1.0){
+            for (Integer n : conjuntoInstalaciones)
+                instalaciones[n] = false;
+            conjuntoInstalaciones.clear();
+            instalacionPartida = random.nextInt(this.numeroNodos);
+            instalaciones[instalacionPartida] = true;
+            conjuntoInstalaciones.add(instalacionPartida);
+            for(int i = 1; i < this.numeroInstalaciones; i++){
+                int nuevaInstalacion = random.nextInt(this.numeroNodos);
+                if(!instalaciones[nuevaInstalacion]){
+                    instalaciones[nuevaInstalacion] = true;
+                    conjuntoInstalaciones.add(nuevaInstalacion);
+                }else
+                    i--;
             }
+            double pmedian = calcularPmedian(instalaciones);
+            double pdispersion = calcularPdispersion(instalaciones);
+            double pmedianNormalizada = normalizarPmedian(pmedian);
+            double pdispersionNormalizada = normalizarPdispersion(pdispersion);
+            Solucion solucion = new Solucion(pmedian, pdispersion, pmedianNormalizada, pdispersionNormalizada, instalaciones);
+            meterSolucion(solucion, this.FPAleatorio);
+            alfa += 0.01;
         }
         return new Date().getTime() - inicioEjecucion;
-    }*/
-
-    private void calcularMejorSolucion(){
-        double valorMejorSolucion = Double.MIN_VALUE;
-        for(Solucion s: this.soluciones){
-            if(Double.compare(valorMejorSolucion, s.getPmedianNormalizada() + s.getPdispersionNormalizada()) < 0){
-                this.mejor_solucion = s;
-                valorMejorSolucion = s.getPmedianNormalizada() + s.getPdispersionNormalizada();
-            }
-        }
     }
-    
-    public long busquedaLocal(){
-        calcularMejorSolucion();
-        boolean frenteParetoMejorado = true;
+
+    //Método que genera un Frente de Pareto con instalaciones greedy.
+    public long FrenteParetoGreedy(){
+        double alfa = 0.0, funcionAgregada, pmedian = Double.MAX_VALUE, pmedianNormalizada = Double.MAX_VALUE, pdispersion = Double.MIN_VALUE, pdispersionNormalizada = Double.MIN_VALUE;
+        Random random = new Random(13);
+        ArrayList<Integer> conjuntoInstalaciones = new ArrayList<>();
+        boolean[] instalaciones = new boolean[this.numeroNodos];
+        int instalacionPartida;
         long inicioEjecucion = new Date().getTime();
-        while(frenteParetoMejorado){
+        while (alfa <= 1.0) {
+            for (Integer n : conjuntoInstalaciones)
+                instalaciones[n] = false;
+            conjuntoInstalaciones.clear();
+            instalacionPartida = random.nextInt(this.numeroNodos);
+            conjuntoInstalaciones.add(instalacionPartida);
+            instalaciones[instalacionPartida] = true;
+            for(int i = 1; i < this.numeroInstalaciones; i++){
+                funcionAgregada = Double.MIN_VALUE;
+                int nuevaInstalacion = random.nextInt(this.numeroNodos); //Valor de inicio basura.
+                for(int j = 0; j < this.numeroNodos; j++)
+                    if(!instalaciones[j]){
+                        instalaciones[j] = true;
+                        pmedian = calcularPmedian(instalaciones);
+                        pmedianNormalizada = normalizarPmedian(pmedian);
+                        pdispersion = calcularPdispersion(instalaciones);
+                        pdispersionNormalizada = normalizarPdispersion(pdispersion);
+                        double funcionAgregadaAux = alfa * (-pmedianNormalizada) + (1.0 - alfa) * pdispersionNormalizada;
+                        if (Double.compare(funcionAgregada, funcionAgregada) < 0) {
+                            funcionAgregada = funcionAgregadaAux;
+                            nuevaInstalacion = j;
+                        }
+                        instalaciones[j] = false;
+                    }
+                instalaciones[nuevaInstalacion] = true;
+                conjuntoInstalaciones.add(nuevaInstalacion);
+            }
+            Solucion solucion = new Solucion(pmedian, pdispersion, pmedianNormalizada, pdispersionNormalizada, instalaciones);
+            meterSolucion(solucion, this.FPGreedy);
+            alfa += 0.01;
+        }
+        return new Date().getTime() - inicioEjecucion;
+    }
+
+    //Método que evalúa cuál es la mejor solución de un Frente de Pareto.
+    private Solucion calcularMejorSolucion(ArrayList<Solucion> soluciones){
+        Solucion mejorSolucion = null;
+        double valorMejorSolucion = Double.MIN_VALUE;
+        for(Solucion s: soluciones)
+            if(Double.compare(valorMejorSolucion, s.getPmedianNormalizado() + s.getPdispersionNormalizado()) < 0){
+                mejorSolucion = s;
+                valorMejorSolucion = s.getPmedianNormalizado() + s.getPdispersionNormalizado();
+            }
+        return mejorSolucion;
+    }
+
+    //Método que genera un Frente de Pareto aplicando una búsqueda local con instalaciones aleatorias o greedy.
+    public long BusquedaLocalGeneral(int modo){
+        Solucion mejorSolucion = null;
+        if(modo == 0)
+            mejorSolucion = calcularMejorSolucion(this.FPAleatorio);
+        else if(modo == 1)
+            mejorSolucion = calcularMejorSolucion(this.FPGreedy);
+        boolean frenteParetoMejorado = true;
+        boolean[] instalaciones;
+        double pmedian, pmedianNormalizada, pdispersion, pdispersionNormalizada;
+        long inicioEjecucion = new Date().getTime();
+        while (frenteParetoMejorado) {
             frenteParetoMejorado = false;
-            for(int i = 0; i < this.nodos && !frenteParetoMejorado; i++)
-                for(int j = 0; j < this.nodos && !frenteParetoMejorado && this.mejor_solucion.getInstalaciones()[i]; j++)
-                    if(!this.mejor_solucion.getInstalaciones()[j]){
-                        boolean[] instalaciones = this.mejor_solucion.getInstalaciones().clone();
+            for (int i = 0; i < this.numeroNodos && !frenteParetoMejorado; i++)
+                for (int j = 0; j < this.numeroNodos && !frenteParetoMejorado && mejorSolucion.getInstalaciones()[i]; j++)
+                    if (!mejorSolucion.getInstalaciones()[j]) {
+                        instalaciones = mejorSolucion.getInstalaciones().clone();
                         instalaciones[i] = false;
                         instalaciones[j] = true;
-                        double pmedian = calcularPmedian(instalaciones);
-                        double pdispersion = calcularPdispersion(instalaciones);
-                        Solucion nuevaMejorSolucion = new Solucion(pmedian, pdispersion, instalaciones);
-                        frenteParetoMejorado = meterSolucion(nuevaMejorSolucion);
-                        if(frenteParetoMejorado) {
-                            normalizarPmedian(nuevaMejorSolucion);
-                            normalizarPdispersion(nuevaMejorSolucion);
-                            this.mejor_solucion = nuevaMejorSolucion;
-                        }
+                        pmedian = calcularPmedian(instalaciones);
+                        pmedianNormalizada = normalizarPmedian(pmedian);
+                        pdispersion = calcularPdispersion(instalaciones);
+                        pdispersionNormalizada = normalizarPdispersion(pdispersion);
+                        Solucion nuevaMejorSolucion = new Solucion(pmedian, pdispersion, pmedianNormalizada, pdispersionNormalizada, instalaciones);
+                        if (modo == 0)
+                            frenteParetoMejorado = meterSolucion(nuevaMejorSolucion, this.FPAleatorio);
+                        else if (modo == 1)
+                            frenteParetoMejorado = meterSolucion(nuevaMejorSolucion, this.FPGreedy);
+                        if (frenteParetoMejorado)
+                            mejorSolucion = nuevaMejorSolucion;
                     }
         }
         return new Date().getTime() - inicioEjecucion;
