@@ -93,28 +93,28 @@ public class Main {
                         escritura.close();
                         ficheroResumen.close();
                         //PASO 3.2: Se escribe un fichero txt con las soluciones del Frente de Pareto aleatorio (antes de la búsqueda local).
-                        FileOutputStream ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/FPAleatorio/"+g2+"FPAleatorio.txt");
+                        FileOutputStream ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/FPAleatorio/"+g);
                         escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
                         for(Solucion s: solucionesFPAleatorio)
                             escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
                         escritura.close();
                         ficheroFPAleatorio.close();
                         //PASO 3.3: Se escribe un fichero txt con las soluciones del Frente de Pareto greedy (antes de la búsqueda local).
-                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/FPGreedy/"+g2+"FPGreedy.txt");
+                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/FPGreedy/"+g);
                         escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
                         for(Solucion s: solucionesFPGreedy)
                             escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
                         escritura.close();
                         ficheroFPAleatorio.close();
                         //PASO 3.4: Se escribe un fichero txt con las soluciones del Frente de Pareto aleatorio (después de la búsqueda local).
-                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/BLAleatorio/"+g2+"BLAleatorio.txt");
+                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/BLAleatorio/"+g);
                         escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
                         for(Solucion s: solucionesBLAleatorio)
                             escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
                         escritura.close();
                         ficheroFPAleatorio.close();
                         //PASO 3.5: Se escribe un fichero txt con las soluciones del Frente de Pareto greedy (después de la búsqueda local).
-                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/BLGreedy/"+g2+"BLGreedy.txt");
+                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/BLGreedy/"+g);
                         escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
                         for(Solucion s: solucionesBLGreedy)
                             escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
