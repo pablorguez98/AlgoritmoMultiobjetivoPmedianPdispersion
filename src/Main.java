@@ -6,98 +6,166 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class Main {
-    //Atributos
-    private static Grafo mapa = null; //Representa el mapa sobre el que se va a trabajar.
-    private static final String ruta = "C:/Users/pablo/OneDrive/Escritorio/TFG/";
+    //Atributos de la clase Main.
+    private static final String fuenteDatos = "C:/Users/pablo/OneDrive/Escritorio/AlgoritmoMultiobjetivo";
+    private static Grafo grafo = null;
 
+    //Método que general el conjunto de posibles soluciones para cada grafo de la fuente de datos.
     public static void main(String[] args) throws IOException {
-        /* PASO 1.
-               1. Se accede a la carpeta que contiene los mapas y se lista cada uno de ellos.
-         */
-        File carpeta = new File(ruta+"Instancias");
+        int nodoA, nodoB, numeroSolucionesFPAleatorio, numeroSolucionesFPGreedy, numeroSolucionesBLAleatorio, numeroSolucionesBLGreedy, numeroNodos, numeroInstalaciones, lineaLeida;
+        double distnaciaAB;
+        String[] informacion1, informacion2;
+        ArrayList<Solucion> solucionesFPAleatorio, solucionesFPGreedy, solucionesBLAleatorio, solucionesBLGreedy;
+        long tiempoEjecucionFPAleatorio, tiempoEjecucionFPGreedy, tiempoEjecucionBLAleatorio, tiempoEjecucionBLGreedy;
+        File carpeta = new File(fuenteDatos+"/Instancias");
         String[] grafos = carpeta.list();
+        //PASO 1: Se obtiene la información de la fuente de datos y se genera el grafo.
         if(grafos != null){
-            for(String grafo: grafos){
-                /* PASO 2. Para cada mapa:
-                       1. Se obtiene el nombre del mapa y se realiza una lectura de la informacion del mapa.
-                       2. Se inicializa el mapa con la información leída como el número de nodos o de instalaciones,
-                          así como con las distancias entre cada punto.
-                 */
-                System.out.println("Grafo: " + grafo + ":");
-                FileReader lectura = new FileReader(ruta+"Instancias/" + grafo);
-                BufferedReader transmision = new BufferedReader(lectura);
-                String linea;
-                int linea_leida = 1;
-                while((linea= transmision.readLine()) != null){
-                    String[] informacion1 = linea.split(" ");
-                    String[] informacion = new String[informacion1.length-1];
-                    System.arraycopy(informacion1, 1, informacion, 0, informacion.length);
-                    if(linea_leida == 1){
-                        int nodos = Integer.parseInt(informacion[0]);
-                        int instalaciones = Integer.parseInt(informacion[2]);
-                        mapa = new Grafo(nodos, instalaciones);
+            for(String g: grafos){
+                String g2 = g.replaceAll(".txt","");
+                System.out.println("Grafo "+g2);
+                System.out.println("\tCreando el grafo....");
+                FileReader flujoLectura = new FileReader(fuenteDatos+"/Instancias/"+g);
+                BufferedReader lectura = new BufferedReader(flujoLectura);
+                lineaLeida = 1;
+                String informacionLeida;
+                while((informacionLeida = lectura.readLine()) != null){
+                    informacion1 = informacionLeida.split(" ");
+                    informacion2 = new String[informacion1.length-1];
+                    System.arraycopy(informacion1, 1, informacion2, 0, informacion2.length);
+                    if(lineaLeida == 1){
+                        numeroNodos = Integer.parseInt(informacion2[0]);
+                        numeroInstalaciones = Integer.parseInt(informacion2[2]);
+                        grafo = new Grafo(numeroNodos, numeroInstalaciones);
                     }else{
-                        int nodoA = Integer.parseInt(informacion[0])-1;
-                        int nodoB = Integer.parseInt(informacion[1])-1;
-                        double distanciaAB = Integer.parseInt(informacion[2]);
-                        mapa.meterDistancia(nodoA, nodoB, distanciaAB);
+                        nodoA = Integer.parseInt(informacion2[0])-1;
+                        nodoB = Integer.parseInt(informacion2[1])-1;
+                        distnaciaAB = Integer.parseInt(informacion2[2]);
+                        grafo.modificarDistancia(nodoA, nodoB, distnaciaAB);
                     }
-                    linea_leida++;
+                    lineaLeida++;
                 }
-                transmision.close();
                 lectura.close();
-                /* Paso 3. Una vez inicializado el grafo:
-                       1. Se evalúan el resto de distancias para obtener las distancias de un nodo a cualquier otro
-                          mediante el Algoritmo de Floyd-Warshall.
-                       2. Se establace unos conjuntos de instalaciones de partida para la evaluación del algoritmo.
-                       3. Se genera un Frente de Pareto con un conjunto de X soluciones, todas igual de válidas,
-                          así como se establece cuál es la mejor solución de ese conjunto de X soluciones.
-                       4. A partir de la mejor solución, se aplica una Búsqueda Local con el fin de mejorar el Frente
-                          de Pareto.
-                 */
-                if(mapa != null){
-                    mapa.calcularDistancias();
-                    long ejecucionFP = mapa.frentePareto()/1000;
-                    ArrayList<Solucion> solucionesFP = (ArrayList<Solucion>) mapa.getSoluciones().clone();
-                    int numeroFP = solucionesFP.size();
-                    long ejecucionBL = mapa.busquedaLocal() /1000;
-                    ArrayList<Solucion> solucionesBL = (ArrayList<Solucion>) mapa.getSoluciones().clone();
-                    int numeroBL = solucionesBL.size();
-                    /* Paso 4.
-                           1. Se generan unos ficheros .png con la representación del Frente de Pareto y de la
-                              Búsqueda Local.
-                           2. Se generan unos ficheros .txt con la información del Frente de Pareto y la Búsqueda Local.
-                     */
-                    final XYSeries frentePareto = new XYSeries("Frente de Pareto");
-                    final XYSeries busquedaLocal = new XYSeries("Busqueda local");
-                    for (Solucion value : solucionesFP)
-                        frentePareto.add(value.getPmedian(), value.getPdispersion());
-                    for (Solucion solucion : solucionesBL)
-                        busquedaLocal.add(solucion.getPmedian(), solucion.getPdispersion());
-                    final XYSeriesCollection series = new XYSeriesCollection();
-                    series.addSeries(frentePareto);
-                    series.addSeries(busquedaLocal);
+                flujoLectura.close();
+
+                if(grafo != null){
+                    //PASO 2: Se genera el Frente de Pareto (ante y después de la BL) con y sin método Greedy en la elección de instalaciones.
+                    grafo.calcularDistancias();
+                    //PASO 2.1 (antes de BL): Sin método Greedy en la elección de instalaciones (instalaciones aleatorias).
+                    System.out.println("\tGenerando el Frente de Pareto Aleatorio (antes de BL)....");
+                    tiempoEjecucionFPAleatorio = grafo.FrenteParetoAleatorio()/1000;
+                    solucionesFPAleatorio = (ArrayList<Solucion>) grafo.getFPAleatorio().clone();
+                    numeroSolucionesFPAleatorio = solucionesFPAleatorio.size();
+                    //PASO 2.2 (antes de BL): Con método Greedy en la elección de instalaciones (mejores instalaciones de partida).
+                    System.out.println("\tGenerando el Frente de Pareto Greedy (antes de BL)....");
+                    tiempoEjecucionFPGreedy = grafo.FrenteParetoGreedy()/1000;
+                    solucionesFPGreedy = (ArrayList<Solucion>) grafo.getFPGreedy().clone();
+                    numeroSolucionesFPGreedy = solucionesFPGreedy.size();
+                    //PASO 2.3 (después de BL): Sin método Greedy en la elección de instalaciones (instalaciones aleatorias).
+                    System.out.println("\tGenerando el Frente de Pareto Aleatorio (después de BL)....");
+                    tiempoEjecucionBLAleatorio = grafo.BusquedaLocalGeneral(0)/1000;
+                    solucionesBLAleatorio = (ArrayList<Solucion>) grafo.getFPAleatorio().clone();
+                    numeroSolucionesBLAleatorio = solucionesBLAleatorio.size();
+                    //PASO 2.4 (después de BL): Con método Greedy en la elección de instalaciones (mejores instalaciones de partida).
+                    System.out.println("\tGenerando el Frente de Pareto Greedy (después de BL)....");
+                    tiempoEjecucionBLGreedy = grafo.BusquedaLocalGeneral(1)/1000;
+                    solucionesBLGreedy = (ArrayList<Solucion>) grafo.getFPGreedy().clone();
+                    numeroSolucionesBLGreedy = solucionesBLGreedy.size();
+                    //PASO 3: Se guarda la información de los resultados obtenidos en ficheros txt y png
                     try{
-                        final JFreeChart grafica = new Grafica().crear_grafica(series, "Grafo: " + grafo);
-                        ChartUtilities.saveChartAsPNG(new File(ruta+"Graficas/"+grafo+".png"), grafica, 400, 300);
-                        File fichero = new File(ruta+"Frentes/"+grafo);
-                        FileWriter escritura = new FileWriter(fichero);
-                        BufferedWriter comunicacion = new BufferedWriter(escritura);
-                        comunicacion.write("Frente de Pareto:\n");
-                        comunicacion.write("\tNumero de soluciones: " + numeroFP +"\n");
-                        comunicacion.write("\tTiempo de ejecucion (sg): " + ejecucionFP +"\n");
-                        for(Solucion s: solucionesFP)
-                            comunicacion.write("\t\tSolucion -> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
-                        comunicacion.write("Busqueda local:\n");
-                        comunicacion.write("\tNumero de soluciones: " + numeroBL+"\n");
-                        comunicacion.write("\tTiempo de ejecucion (sg): " + ejecucionBL +"\n");
-                        for(Solucion s: solucionesBL)
-                            comunicacion.write("\t\tSolucion -> pmedian: "+s.getPmedian()+" pdispersion: "+s.getPdispersion()+"\n");
-                        comunicacion.close();
+                        System.out.println("\tGenerando ficheros txt....");
+                        //PASO 3.1: Se escribe un fichero txt con el resumen de cada grafo con su funcionamiento aleatorio y greedy.
+                        FileOutputStream ficheroResumen = new FileOutputStream(fuenteDatos+"/Resumen/"+g);
+                        BufferedWriter escritura = new BufferedWriter(new OutputStreamWriter(ficheroResumen, "UTF-8"));
+                        escritura.write("Grafo "+g2+":\n");
+                        escritura.write("\tFrente de Pareto Aleatorio (antes de la busqueda local):\n");
+                        escritura.write("\t\tNumero de soluciones --> "+numeroSolucionesFPAleatorio+" soluciones.\n");
+                        escritura.write("\t\tTiempo de ejecucion --> "+tiempoEjecucionFPAleatorio+" segundos.\n");
+                        escritura.write("\tFrente de Pareto Greedy (antes de la busqueda local):\n");
+                        escritura.write("\t\tNumero de soluciones --> "+numeroSolucionesFPGreedy+" soluciones.\n");
+                        escritura.write("\t\tTiempo de ejecucion --> "+tiempoEjecucionFPGreedy+" segundos.\n");
+                        escritura.write("\tFrente de Pareto Aleatorio (despues de la busqueda local):\n");
+                        escritura.write("\t\tNumero de soluciones --> "+numeroSolucionesBLAleatorio+" soluciones.\n");
+                        escritura.write("\t\tTiempo de ejecucion --> "+tiempoEjecucionBLAleatorio+" segundos.\n");
+                        escritura.write("\tFrente de Pareto Greedy (despues de la busqueda local):\n");
+                        escritura.write("\t\tNumero de soluciones --> "+numeroSolucionesBLGreedy+" soluciones.\n");
+                        escritura.write("\t\tTiempo de ejecucion --> "+tiempoEjecucionBLGreedy+" segundos.\n\n");
                         escritura.close();
-                    }catch(Exception e){
+                        ficheroResumen.close();
+                        //PASO 3.2: Se escribe un fichero txt con las soluciones del Frente de Pareto aleatorio (antes de la búsqueda local).
+                        FileOutputStream ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/FPAleatorio/"+g);
+                        escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
+                        for(Solucion s: solucionesFPAleatorio)
+                            escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
+                        escritura.close();
+                        ficheroFPAleatorio.close();
+                        //PASO 3.3: Se escribe un fichero txt con las soluciones del Frente de Pareto greedy (antes de la búsqueda local).
+                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/FPGreedy/"+g);
+                        escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
+                        for(Solucion s: solucionesFPGreedy)
+                            escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
+                        escritura.close();
+                        ficheroFPAleatorio.close();
+                        //PASO 3.4: Se escribe un fichero txt con las soluciones del Frente de Pareto aleatorio (después de la búsqueda local).
+                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/BLAleatorio/"+g);
+                        escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
+                        for(Solucion s: solucionesBLAleatorio)
+                            escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
+                        escritura.close();
+                        ficheroFPAleatorio.close();
+                        //PASO 3.5: Se escribe un fichero txt con las soluciones del Frente de Pareto greedy (después de la búsqueda local).
+                        ficheroFPAleatorio = new FileOutputStream(fuenteDatos+"/BLGreedy/"+g);
+                        escritura = new BufferedWriter(new OutputStreamWriter(ficheroFPAleatorio, "UTF-8"));
+                        for(Solucion s: solucionesBLGreedy)
+                            escritura.write(s.getPmedian()+"\t"+s.getPdispersion()+"\n");
+                        escritura.close();
+                        ficheroFPAleatorio.close();
+                        //PASO 3.6: Se muestra un gráfico en un archivo png de Algoritmo que genera N soluciones random vs Algoritmo que genera N soluciones greedy
+                        System.out.println("\tGenerando gráficas png....");
+                        final XYSeries frenteParetoAleatorio = new XYSeries("Frente de Pareto Aleatorio");
+                        for(Solucion s: solucionesFPAleatorio)
+                            frenteParetoAleatorio.add(s.getPmedian(), s.getPdispersion());
+                        final XYSeries frenteParetoGreedy = new XYSeries("Frente de Pareto Greedy");
+                        for(Solucion s: solucionesFPGreedy)
+                            frenteParetoGreedy.add(s.getPmedian(), s.getPdispersion());
+                        XYSeriesCollection series = new XYSeriesCollection();
+                        series.addSeries(frenteParetoAleatorio);
+                        series.addSeries(frenteParetoGreedy);
+                        JFreeChart grafica = new Grafica().crearGrafica(series, "Grafo "+g2+":\nFPAleatorio vs FPGreedy");
+                        File graficaPNG = new File(fuenteDatos+"/Graficas FPAleatorio vs FPGreedy/"+g+".png");
+                        ChartUtilities.saveChartAsPNG(graficaPNG, grafica, 400, 300);
+                        //PASO 3.7: Se muestra un gráfico en un archivo png de Algoritmos que genera N soluciones random vs Algoritmo que genera N soluciones random con búsqueda local
+                        final XYSeries busquedaLocalAleatorio = new XYSeries("Busqueda local Aleatorio");
+                        for(Solucion s: solucionesBLAleatorio)
+                            busquedaLocalAleatorio.add(s.getPmedian(), s.getPdispersion());
+                        series = new XYSeriesCollection();
+                        series.addSeries(frenteParetoAleatorio);
+                        series.addSeries(busquedaLocalAleatorio);
+                        grafica = new Grafica().crearGrafica(series, "Grafo "+g2+":\nFPAleatorio vs BLAleatorio");
+                        graficaPNG = new File(fuenteDatos+"/Graficas FPAleatorio vs BLAleatorio/"+g+".png");
+                        ChartUtilities.saveChartAsPNG(graficaPNG, grafica, 400, 300);
+                        //PASO 3.8: Se muestra un gráfico en un archivo png de Algoritmo que genera N soluciones greedy vs Algoritmo que genera N soluciones greedy con búsqueda local
+                        final XYSeries busquedaLocalGreedy = new XYSeries("Busqueda local Greedy");
+                        for(Solucion s: solucionesBLGreedy)
+                            busquedaLocalGreedy.add(s.getPmedian(), s.getPdispersion());
+                        series = new XYSeriesCollection();
+                        series.addSeries(frenteParetoGreedy);
+                        series.addSeries(busquedaLocalGreedy);
+                        grafica = new Grafica().crearGrafica(series, "Grafo "+g2+":\nFPGreedy vs BLGreedy");
+                        graficaPNG = new File(fuenteDatos+"/Graficas FPGreedy vs BLGreedy/"+g+".png");
+                        ChartUtilities.saveChartAsPNG(graficaPNG, grafica, 400, 300);
+                        //PASO 3.9: Se muestra un gráfico en un archivo png de Algoritmo que genera N soluciones random con búsqueda local vs Algoritmo que genera N soluciones greedy con búsqueda local
+                        series = new XYSeriesCollection();
+                        series.addSeries(busquedaLocalAleatorio);
+                        series.addSeries(busquedaLocalGreedy);
+                        grafica = new Grafica().crearGrafica(series, "Grafo "+g2+":\nBLAleatorio vs BLGreedy");
+                        graficaPNG = new File(fuenteDatos+"/Graficas BLAleatorio vs BLGreedy/"+g+".png");
+                        ChartUtilities.saveChartAsPNG(graficaPNG, grafica, 400, 300);
+                        System.out.println("\t....Fin de la ejecucion");
+                    }catch (Exception e){
                         e.printStackTrace();
                     }
+
                 }
             }
         }
